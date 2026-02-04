@@ -3,8 +3,25 @@
 import { useEffect, useRef, useState, Suspense, createContext, useContext } from "react";
 import { Github, Linkedin, Mail, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, useGLTF, Environment } from "@react-three/drei";
+import dynamic from "next/dynamic";
+
+// Dynamically import Three.js components to avoid SSR issues with ProgressEvent
+const Canvas = dynamic(
+  () => import("@react-three/fiber").then((mod) => mod.Canvas),
+  { ssr: false }
+);
+const OrbitControls = dynamic(
+  () => import("@react-three/drei").then((mod) => mod.OrbitControls),
+  { ssr: false }
+);
+const Environment = dynamic(
+  () => import("@react-three/drei").then((mod) => mod.Environment),
+  { ssr: false }
+);
+
+// Import hooks directly since they're only used in client components
+import { useFrame } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
 const AVATAR_URL = "https://models.readyplayer.me/695ab54e8f9c70cbc92c8821.glb";
@@ -81,11 +98,13 @@ function AvatarScene({ mousePosition }: { mousePosition: { x: number; y: number 
 export function Hero() {
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isClient, setIsClient] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const avatarContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsVisible(true);
+    setIsClient(true);
   }, []);
 
   // Track mouse position relative to avatar container
@@ -223,7 +242,7 @@ export function Hero() {
               
               {/* 3D Avatar with React Three Fiber */}
               <div className="relative z-10 w-full h-full">
-                <AvatarScene mousePosition={mousePosition} />
+                {isClient && <AvatarScene mousePosition={mousePosition} />}
               </div>
             </div>
           </div>

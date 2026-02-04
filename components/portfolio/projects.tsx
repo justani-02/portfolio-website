@@ -45,13 +45,31 @@ const projects = [
       future: "Extending to emergency healthcare routing, pilot deployment in smart cities.",
       venue: "IEEE iMETA2025, Dubrovnik, Croatia (Oct 14-17, 2025)",
     },
-    tags: ["Deep Learning", "Transformer", "Graph Neural Networks", "Urban Analytics", "Traffic Prediction", "Python", "PyTorch"],
+    tags: ["Deep Learning", "Transformer", "Graph Neural Networks", "Urban Analytics", "Traffic Prediction", "Python", "PyTorch", "Unity"],
     status: "Accepted",
     badge: "IEEE iMETA2025",
     gradient: "from-violet-500/20 to-purple-500/20",
     borderColor: "hover:border-violet-500/50",
     size: "large",
     hasExpandedView: true,
+    hasCarousel: true,
+    carouselImages: [
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1%20%281%29-zgNhp3Cg2e4MiYQ7W8eYfekUEGFGGj.png",
+        caption: "Aerial view of the complete urban simulation environment",
+        alt: "Wide aerial view of Unity 3D city simulation with skyscrapers, roads, and residential areas"
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2%20%281%29-LTjq8B6Vj9rPLScTFwQSLBh2LHuKMn.png",
+        caption: "Dense urban infrastructure with roundabouts and mixed-use zones",
+        alt: "Detailed Unity 3D view showing roundabouts, commercial and residential buildings"
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4-rZvkIAJF1iK9nqJ4hR3rlueB9C6EBU.png",
+        caption: "Street-level traffic simulation with vehicle trajectories",
+        alt: "Street-level view of intersection with vehicles, pedestrian crossings, and traffic flow"
+      },
+    ],
   },
   {
     id: 2,

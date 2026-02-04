@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Calendar, MapPin, Award } from "lucide-react";
+import { Calendar, MapPin, Award, FileCheck, ChevronDown } from "lucide-react";
 
 const publications = [
   {
@@ -10,11 +10,12 @@ const publications = [
       "MemFusion-Tformer: Memory-Driven Cross-Attention for Dynamic Congestion Prediction in Urban Networks",
     conference: "IEEE iMETA2025",
     date: "October 14-17, 2025",
-    location: "Dubrovnik, Croatia",
+    location: "Hotel Dubrovnik Palace, Dubrovnik, Croatia",
     status: "Accepted",
     statusColor: "emerald",
     description:
       "Selected through highly competitive review process with limited paper acceptance, recognizing the significance of the contribution.",
+    acceptanceImage: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Acceptance-TPo2UHwtX9HFWmeELQ40dRUyj4DLFj.png",
   },
   {
     id: 2,
@@ -22,11 +23,12 @@ const publications = [
       "Mobile Health Apps and Network Integration: Transforming Healthcare Delivery",
     conference: "Springer RASESIA 2024",
     date: "June 14-15, 2024",
-    location: "NIT Kurukshetra, India",
-    status: "Published",
+    location: "NIT Kurukshetra, Haryana, India",
+    status: "Published & Presented",
     statusColor: "cyan",
     description:
-      "Published in Springer Volume 2 as part of thematic segregation. Presented at hybrid conference on Recent Advances in Smart Energy Systems.",
+      "Published in Springer Volume 2. Presented at First International Conference on Recent Advances in Smart Energy Systems & Intelligent Automation (RASESIA 2024).",
+    certificateImage: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/paper%20presentation-4N8xWYxRjO8NxL8xISBxFlf7J5MAly.jpg",
   },
 ];
 
@@ -37,7 +39,20 @@ const statusColorMap: Record<string, string> = {
 
 export function Publications() {
   const [isVisible, setIsVisible] = useState(false);
+  const [expandedPubs, setExpandedPubs] = useState<Set<number>>(new Set());
   const sectionRef = useRef<HTMLElement>(null);
+
+  const toggleExpanded = (pubId: number) => {
+    setExpandedPubs((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(pubId)) {
+        newSet.delete(pubId);
+      } else {
+        newSet.add(pubId);
+      }
+      return newSet;
+    });
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -135,9 +150,37 @@ export function Publications() {
                 </div>
 
                 {/* Description */}
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   {pub.description}
                 </p>
+
+                {/* Expandable Certificate/Acceptance Image */}
+                {(pub.certificateImage || pub.acceptanceImage) && (
+                  <div>
+                    <button
+                      onClick={() => toggleExpanded(pub.id)}
+                      className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                    >
+                      <FileCheck className="w-4 h-4" />
+                      <span>{pub.certificateImage ? "View Certificate" : "View Acceptance"}</span>
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedPubs.has(pub.id) ? "rotate-180" : ""}`} />
+                    </button>
+                    
+                    <div className={`grid transition-all duration-500 ease-in-out ${
+                      expandedPubs.has(pub.id) ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0"
+                    }`}>
+                      <div className="overflow-hidden">
+                        <div className="rounded-xl overflow-hidden border border-border/50 bg-black/20">
+                          <img
+                            src={pub.certificateImage || pub.acceptanceImage}
+                            alt={pub.certificateImage ? `Certificate for ${pub.title}` : `Acceptance letter for ${pub.title}`}
+                            className="w-full h-auto object-contain"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}
