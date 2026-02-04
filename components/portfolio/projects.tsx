@@ -113,8 +113,8 @@ const projects = [
     title: "Sexual Harassment Awareness Campaign",
     category: "Social Impact Design",
     description:
-      "Visual narrative series of 3 digital artworks depicting the journey through trauma and resilience, raising awareness about lasting impacts through powerful artistic expression.",
-    tags: ["Digital Art", "Social Impact", "Visual Storytelling"],
+      "A three-part visual narrative using color psychology and abstract portraiture to depict trauma's lasting impact. The progression creates visceral understanding while maintaining artistic dignity through carefully chosen symbolism.",
+    tags: ["Digital Art", "Social Impact", "Visual Storytelling", "Color Psychology"],
     status: "Completed - 2022",
     gradient: "from-orange-500/20 to-amber-500/20",
     borderColor: "hover:border-orange-500/50",
@@ -123,18 +123,18 @@ const projects = [
     carouselImages: [
       {
         src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/awareness-1-before-F0O0rqhDJHfAKrQOhXWj82cI7tJZwC.png",
-        caption: "Before: Living in joy and vibrant colors",
-        alt: "Vibrant pop-art portrait with colorful face and peaceful expression"
+        caption: "Colourful: Vibrant blues, greens, pinks representing joy, trust, and freedom",
+        alt: "Vibrant pop-art portrait with colorful face depicting joy and innocence before trauma"
       },
       {
         src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/awareness-2-during-TlUv1ZLf5oaQ665oLZknCdD1evQRzF.png",
-        caption: "During: Conflicting emotions and turmoil",
-        alt: "Chaotic abstract portrait with clashing colors representing emotional turmoil"
+        caption: "During the Act: Bright colors clash with darkness, showing violation and confusion",
+        alt: "Chaotic abstract portrait where vivid colors violently clash with encroaching darkness"
       },
       {
         src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/awareness-3-after-XPGzGODOzZPgknaqLfMA0ZOSqplzYh.png",
-        caption: "After: Navigating darkness with fragments of hope",
-        alt: "Somber portrait with muted colors and intense gaze representing aftermath"
+        caption: "Darkness: Predominantly dark tones with fragments of color showing resilience",
+        alt: "Somber portrait with muted, dark tones and scattered color fragments representing cautious hope"
       },
     ],
   },
