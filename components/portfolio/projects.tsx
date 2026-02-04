@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ExternalLink, Github, Sparkles, Brain, Activity, Users, ChevronDown, MapPin, Award, TrendingUp } from "lucide-react";
+import { ExternalLink, Github, Sparkles, Brain, Activity, Users, ChevronDown, MapPin, Award, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const projects = [
@@ -113,19 +113,55 @@ const projects = [
     title: "Sexual Harassment Awareness Campaign",
     category: "Social Impact Design",
     description:
-      "Visual narrative series of 3 digital artworks depicting journey through trauma and resilience, raising awareness about lasting impacts.",
+      "Visual narrative series of 3 digital artworks depicting the journey through trauma and resilience, raising awareness about lasting impacts through powerful artistic expression.",
     tags: ["Digital Art", "Social Impact", "Visual Storytelling"],
     status: "Completed - 2022",
     gradient: "from-orange-500/20 to-amber-500/20",
     borderColor: "hover:border-orange-500/50",
-    size: "small",
+    size: "large",
+    hasCarousel: true,
+    carouselImages: [
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/awareness-1-before-F0O0rqhDJHfAKrQOhXWj82cI7tJZwC.png",
+        caption: "Before: Living in joy and vibrant colors",
+        alt: "Vibrant pop-art portrait with colorful face and peaceful expression"
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/awareness-2-during-TlUv1ZLf5oaQ665oLZknCdD1evQRzF.png",
+        caption: "During: Conflicting emotions and turmoil",
+        alt: "Chaotic abstract portrait with clashing colors representing emotional turmoil"
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/awareness-3-after-XPGzGODOzZPgknaqLfMA0ZOSqplzYh.png",
+        caption: "After: Navigating darkness with fragments of hope",
+        alt: "Somber portrait with muted colors and intense gaze representing aftermath"
+      },
+    ],
   },
 ];
 
 export function Projects() {
   const [isVisible, setIsVisible] = useState(false);
   const [expandedProjects, setExpandedProjects] = useState<Set<number>>(new Set());
+  const [carouselIndexes, setCarouselIndexes] = useState<Record<number, number>>({});
   const sectionRef = useRef<HTMLElement>(null);
+
+  const handleCarouselNav = (projectId: number, direction: "prev" | "next", totalImages: number) => {
+    setCarouselIndexes((prev) => {
+      const currentIndex = prev[projectId] || 0;
+      let newIndex: number;
+      if (direction === "next") {
+        newIndex = (currentIndex + 1) % totalImages;
+      } else {
+        newIndex = (currentIndex - 1 + totalImages) % totalImages;
+      }
+      return { ...prev, [projectId]: newIndex };
+    });
+  };
+
+  const setCarouselIndex = (projectId: number, index: number) => {
+    setCarouselIndexes((prev) => ({ ...prev, [projectId]: index }));
+  };
 
   const toggleExpanded = (projectId: number) => {
     setExpandedProjects((prev) => {
@@ -260,10 +296,86 @@ export function Projects() {
                   </h3>
 
                   <p className={`text-muted-foreground leading-relaxed ${
-                    isFeatured ? "text-base lg:text-lg max-w-4xl mb-6" : `text-sm ${hasExpandedDetails ? "mb-4" : "flex-grow mb-6"}`
+                    isFeatured ? "text-base lg:text-lg max-w-4xl mb-6" : `text-sm ${hasExpandedDetails || project.hasCarousel ? "mb-4" : "flex-grow mb-6"}`
                   }`}>
                     {project.description}
                   </p>
+
+                  {/* Image Carousel for Awareness Project */}
+                  {project.hasCarousel && project.carouselImages && (
+                    <div className="mb-6">
+                      <div className="relative rounded-xl overflow-hidden bg-black/50 aspect-square max-w-md mx-auto group/carousel">
+                        {/* Images */}
+                        {project.carouselImages.map((image, imgIndex) => {
+                          const currentIndex = carouselIndexes[project.id] || 0;
+                          return (
+                            <div
+                              key={imgIndex}
+                              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                                imgIndex === currentIndex ? "opacity-100" : "opacity-0"
+                              }`}
+                            >
+                              <img
+                                src={image.src}
+                                alt={image.alt}
+                                className="w-full h-full object-cover"
+                              />
+                              {/* Caption Overlay */}
+                              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 pt-12">
+                                <p className="text-sm sm:text-base font-medium text-white text-center">
+                                  {image.caption}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                        {/* Navigation Arrows */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCarouselNav(project.id, "prev", project.carouselImages!.length);
+                          }}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 backdrop-blur-sm border border-white/20"
+                          aria-label="Previous image"
+                        >
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCarouselNav(project.id, "next", project.carouselImages!.length);
+                          }}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 backdrop-blur-sm border border-white/20"
+                          aria-label="Next image"
+                        >
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+
+                        {/* Dot Indicators */}
+                        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-2">
+                          {project.carouselImages.map((_, dotIndex) => {
+                            const currentIndex = carouselIndexes[project.id] || 0;
+                            return (
+                              <button
+                                key={dotIndex}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setCarouselIndex(project.id, dotIndex);
+                                }}
+                                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                                  dotIndex === currentIndex
+                                    ? "bg-white w-6"
+                                    : "bg-white/50 hover:bg-white/80"
+                                }`}
+                                aria-label={`Go to image ${dotIndex + 1}`}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Expandable Details Section */}
                   {hasExpandedDetails && (
