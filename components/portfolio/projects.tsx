@@ -311,8 +311,8 @@ export function Projects() {
                               
                               <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
                                 <h4 className="text-sm font-semibold text-indigo-300 mb-2 flex items-center gap-2">
-                                  <MapPin className="w-4 h-4" />
-                                  Venue
+                                  <Award className="w-4 h-4" />
+                                  Accepted At
                                 </h4>
                                 <p className="text-sm text-muted-foreground">
                                   {project.expandedDetails?.venue}
