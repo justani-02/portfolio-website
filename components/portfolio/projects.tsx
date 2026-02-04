@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ExternalLink, Github, Sparkles, Brain, Activity, Users } from "lucide-react";
+import { ExternalLink, Github, Sparkles, Brain, Activity, Users, ChevronDown, MapPin, Award, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const projects = [
@@ -30,15 +30,28 @@ const projects = [
   },
   {
     id: 1,
-    title: "MemFusion-Tformer",
-    category: "AI Research",
+    title: "MemFusion-Tformer: Memory-Driven Cross-Attention for Dynamic Congestion Prediction",
+    category: "AI Research | Urban Computing",
     description:
-      "Memory-Driven Cross-Attention for Dynamic Congestion Prediction in Urban Networks. Advanced transformer architecture using memory-driven mechanisms for urban traffic prediction.",
-    tags: ["Deep Learning", "Transformer Architecture", "Urban Analytics", "AI"],
-    status: "Accepted - IEEE iMETA2025",
+      "Novel deep learning architecture for urban traffic prediction using memory-driven transformer mechanisms. Developed for India's AMRUT Government Project. Predicts congestion 30-60 minutes ahead with 87% accuracy across urban networks.",
+    expandedDetails: {
+      keyFeatures: [
+        "Multi-head cross-attention with temporal memory bank",
+        "Graph neural network for road topology modeling",
+        "Trained on 10,000+ vehicle trajectories, 500+ sensors",
+        "Enables emergency vehicle routing optimization",
+      ],
+      technical: "Compared against 7 baseline models (LSTM, GRU, TCN, vanilla Transformers). Metrics: MAE, RMSE, prediction accuracy.",
+      future: "Extending to emergency healthcare routing, pilot deployment in smart cities.",
+      venue: "IEEE iMETA2025, Dubrovnik, Croatia (Oct 14-17, 2025)",
+    },
+    tags: ["Deep Learning", "Transformer", "Graph Neural Networks", "Urban Analytics", "Traffic Prediction", "Python", "PyTorch"],
+    status: "Accepted",
+    badge: "IEEE iMETA2025",
     gradient: "from-violet-500/20 to-purple-500/20",
     borderColor: "hover:border-violet-500/50",
     size: "large",
+    hasExpandedView: true,
   },
   {
     id: 2,
@@ -111,7 +124,20 @@ const projects = [
 
 export function Projects() {
   const [isVisible, setIsVisible] = useState(false);
+  const [expandedProjects, setExpandedProjects] = useState<Set<number>>(new Set());
   const sectionRef = useRef<HTMLElement>(null);
+
+  const toggleExpanded = (projectId: number) => {
+    setExpandedProjects((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(projectId)) {
+        newSet.delete(projectId);
+      } else {
+        newSet.add(projectId);
+      }
+      return newSet;
+    });
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -163,6 +189,8 @@ export function Projects() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, index) => {
             const isFeatured = project.size === "featured";
+            const isExpanded = expandedProjects.has(project.id);
+            const hasExpandedDetails = project.hasExpandedView && project.expandedDetails;
             
             return (
               <div
@@ -208,8 +236,12 @@ export function Projects() {
                         {project.category}
                       </span>
                       {project.badge && (
-                        <span className="px-3 py-1 text-xs font-bold text-cyan-200 bg-cyan-500/20 border border-cyan-400/40 rounded-full flex items-center gap-1.5">
-                          <Sparkles className="w-3 h-3" />
+                        <span className={`px-3 py-1 text-xs font-bold rounded-full flex items-center gap-1.5 ${
+                          isFeatured 
+                            ? "text-cyan-200 bg-cyan-500/20 border border-cyan-400/40"
+                            : "text-violet-200 bg-violet-500/20 border border-violet-400/40"
+                        }`}>
+                          <Award className="w-3 h-3" />
                           {project.badge}
                         </span>
                       )}
@@ -227,11 +259,82 @@ export function Projects() {
                     {project.title}
                   </h3>
 
-                  <p className={`text-muted-foreground leading-relaxed mb-6 ${
-                    isFeatured ? "text-base lg:text-lg max-w-4xl" : "text-sm flex-grow"
+                  <p className={`text-muted-foreground leading-relaxed ${
+                    isFeatured ? "text-base lg:text-lg max-w-4xl mb-6" : `text-sm ${hasExpandedDetails ? "mb-4" : "flex-grow mb-6"}`
                   }`}>
                     {project.description}
                   </p>
+
+                  {/* Expandable Details Section */}
+                  {hasExpandedDetails && (
+                    <div className="mb-6">
+                      <button
+                        onClick={() => toggleExpanded(project.id)}
+                        className="flex items-center gap-2 text-sm font-medium text-violet-300 hover:text-violet-200 transition-colors mb-4"
+                      >
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`} />
+                        {isExpanded ? "Show Less" : "Read More"}
+                      </button>
+                      
+                      <div className={`grid transition-all duration-500 ease-in-out ${
+                        isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}>
+                        <div className="overflow-hidden">
+                          <div className="space-y-4 pt-2 pb-4">
+                            {/* Key Features */}
+                            <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
+                              <h4 className="text-sm font-semibold text-violet-300 mb-3 flex items-center gap-2">
+                                <Sparkles className="w-4 h-4" />
+                                Key Features
+                              </h4>
+                              <ul className="space-y-2">
+                                {project.expandedDetails?.keyFeatures.map((feature, i) => (
+                                  <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                                    <span className="text-violet-400 mt-1">{">"}</span>
+                                    {feature}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Technical & Venue */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                                <h4 className="text-sm font-semibold text-purple-300 mb-2 flex items-center gap-2">
+                                  <Brain className="w-4 h-4" />
+                                  Technical Evaluation
+                                </h4>
+                                <p className="text-sm text-muted-foreground">
+                                  {project.expandedDetails?.technical}
+                                </p>
+                              </div>
+                              
+                              <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
+                                <h4 className="text-sm font-semibold text-indigo-300 mb-2 flex items-center gap-2">
+                                  <MapPin className="w-4 h-4" />
+                                  Venue
+                                </h4>
+                                <p className="text-sm text-muted-foreground">
+                                  {project.expandedDetails?.venue}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Future Work */}
+                            <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20">
+                              <h4 className="text-sm font-semibold text-pink-300 mb-2 flex items-center gap-2">
+                                <TrendingUp className="w-4 h-4" />
+                                Future Directions
+                              </h4>
+                              <p className="text-sm text-muted-foreground">
+                                {project.expandedDetails?.future}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Highlights for featured project */}
                   {isFeatured && project.highlights && (
