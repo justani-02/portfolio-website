@@ -467,10 +467,10 @@ export function Chatbot() {
         )}
       </AnimatePresence>
 
-      {/* Floating chat button with avatar head thumbnail */}
+      {/* Floating chat button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-primary/80 to-accent/80 shadow-lg shadow-primary/30 flex items-center justify-center overflow-hidden border-2 border-primary/50"
+        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/30 flex items-center justify-center overflow-hidden border-2 border-primary/30"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         animate={{
@@ -507,26 +507,12 @@ export function Chatbot() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="relative w-full h-full"
+              className="relative"
             >
-              {/* Avatar head thumbnail */}
-              <div className="absolute inset-0 w-full h-full">
-                {isClient && (
-                  <Canvas
-                    camera={{ position: [0, 0.15, 1.2], fov: 35 }}
-                    style={{ background: "transparent" }}
-                  >
-                    <ambientLight intensity={0.8} />
-                    <directionalLight position={[3, 3, 5]} intensity={0.7} />
-                    <Suspense fallback={null}>
-                      <AvatarHead expression="idle" isBlinking={isBlinking} />
-                    </Suspense>
-                  </Canvas>
-                )}
-              </div>
+              <Sparkles className="w-6 h-6 text-white" />
               {/* Notification dot for eggs */}
               {eggsFoundCount > 0 && eggsFoundCount < 5 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-[10px] font-bold rounded-full flex items-center justify-center text-white border border-white/30 z-10">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-[10px] font-bold rounded-full flex items-center justify-center text-white">
                   {eggsFoundCount}
                 </span>
               )}
