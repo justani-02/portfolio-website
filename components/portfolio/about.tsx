@@ -340,32 +340,7 @@ export function About() {
               </p>
             </motion.div>
 
-            {/* Stats */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="grid grid-cols-3 gap-6 pt-4"
-            >
-              <div className="text-center p-4 rounded-2xl bg-card/30 border border-border/30">
-                <div className="text-3xl font-bold text-primary">
-                  <AnimatedCounter value={2} />+
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">Publications</div>
-              </div>
-              <div className="text-center p-4 rounded-2xl bg-card/30 border border-border/30">
-                <div className="text-3xl font-bold text-primary">
-                  <AnimatedCounter value={4} />+
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">Years Experience</div>
-              </div>
-              <div className="text-center p-4 rounded-2xl bg-card/30 border border-border/30">
-                <div className="text-3xl font-bold text-primary">
-                  <AnimatedCounter value={10} />+
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">Projects</div>
-              </div>
-            </motion.div>
+            
           </motion.div>
 
           {/* Right Column - Interactive Skills */}
