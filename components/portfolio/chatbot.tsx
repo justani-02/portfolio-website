@@ -2,34 +2,34 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, X, Sparkles, BookOpen, FolderOpen, Gift } from "lucide-react";
+import { Send, X, Sparkles, Gift, HelpCircle, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Easter eggs data with fun hints - 4 click-based eggs
+// Easter eggs data - 4 simple click-based eggs
 const EASTER_EGGS = [
   { 
     id: 1, 
-    name: "RUNNER MODE", 
-    hint: "See that shoe icon at the bottom? Try clicking it multiple times!",
-    funHint: "A marathon champion never stops running... find the shoe in the footer and click it 3 times!"
+    name: "SECRET MENU", 
+    hint: "Try clicking my name or logo multiple times!",
+    funHint: "See that AC logo in the navigation? Give it 3 clicks and see what happens!"
   },
   { 
     id: 2, 
-    name: "COLORFUL", 
-    hint: "The awareness campaign tells a story... click each artwork in order!",
-    funHint: "Those 3 awareness artworks show an emotional journey. Click all of them to complete it!"
+    name: "EXPLORER", 
+    hint: "Have you explored the entire page? Try scrolling all the way down!",
+    funHint: "True explorers see everything! Scroll to the very bottom of the page..."
   },
   { 
     id: 3, 
-    name: "DANCE TIME", 
-    hint: "My avatar is clickable... try clicking it a few times!",
-    funHint: "That 3D avatar up top? She loves to dance! Click 5 times and watch the party start!"
+    name: "SKILL MASTER", 
+    hint: "Check out my skills in the About section... try clicking each one!",
+    funHint: "There are 6 skill cards in the About section. Click ALL of them to become a Skill Master!"
   },
   { 
     id: 4, 
-    name: "RESEARCHER", 
-    hint: "Check out my published papers... click both of them!",
-    funHint: "I'm proud of my publications! Click both research cards to unlock the Research Explorer badge!"
+    name: "SOCIAL BUTTERFLY", 
+    hint: "Want to connect? Try clicking all my social media icons!",
+    funHint: "In the hero section, there are 3 social icons (LinkedIn, GitHub, Email). Click all 3!"
   },
 ];
 
@@ -44,8 +44,6 @@ interface ConversationState {
   awaitingHintConfirmation: boolean;
   lastTopic: string | null;
 }
-
-
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -107,7 +105,7 @@ export function Chatbot() {
         const remaining = 4 - eggsFound.size - 1;
         const newMessage: Message = {
           id: Date.now(),
-          text: `Woohoo! You found ${eggName}! ${remaining > 0 ? `${remaining} more to go! Keep hunting!` : "That's all 5! You're a true explorer!"}`,
+          text: `Amazing! You found ${eggName}! ${remaining > 0 ? `${remaining} more to go! Keep hunting!` : "That's all 4! You're a Master Explorer!"}`,
           isUser: false,
           timestamp: new Date(),
         };
@@ -127,6 +125,16 @@ export function Chatbot() {
     scrollToBottom();
   }, [messages]);
 
+  const getUnfoundHint = useCallback(() => {
+    // Get hints for eggs not yet found
+    const unfoundEggs = EASTER_EGGS.filter(egg => !eggsFound.has(egg.id));
+    if (unfoundEggs.length === 0) {
+      return "You've found them all! You're amazing!";
+    }
+    const randomEgg = unfoundEggs[Math.floor(Math.random() * unfoundEggs.length)];
+    return `Hint for "${randomEgg.name}": ${randomEgg.funHint}`;
+  }, [eggsFound]);
+
   const getBotResponse = useCallback((userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase().trim();
     
@@ -134,9 +142,7 @@ export function Chatbot() {
     if (conversationState.awaitingHintConfirmation) {
       if (lowerMessage.match(/^(yes|yeah|yep|sure|ok|okay|please|yea|y|definitely|absolutely)$/)) {
         setConversationState({ awaitingHintConfirmation: false, lastTopic: "hint" });
-        const egg = EASTER_EGGS[currentHintIndex];
-        setCurrentHintIndex((prev) => (prev + 1) % EASTER_EGGS.length);
-        return `Here's a clue for "${egg.name}": ${egg.funHint}`;
+        return getUnfoundHint();
       }
       if (lowerMessage.match(/^(no|nope|nah|n|not now|later)$/)) {
         setConversationState({ awaitingHintConfirmation: false, lastTopic: null });
@@ -144,11 +150,16 @@ export function Chatbot() {
       }
     }
     
+    // Help requests
+    if (lowerMessage.match(/^help$|how do i|what can/)) {
+      return "Find 4 hidden surprises in this portfolio! Want a hint? Just ask! You can also ask me about Ananya's projects, skills, experience, or publications.";
+    }
+    
     // Easter eggs inquiry
-    if (lowerMessage.match(/easter|eggs?|hidden|secret|hunt/)) {
+    if (lowerMessage.match(/easter|eggs?|hidden|secret|hunt|surprise/)) {
       const found = eggsFound.size;
       if (found === 4) {
-        return "You found ALL 4 easter eggs! You're amazing! Want to know more about Ananya's work?";
+        return "WOW! You found them all! Master Explorer! Want to know more about Ananya's work?";
       }
       setConversationState({ awaitingHintConfirmation: true, lastTopic: "easter" });
       return `There are 4 hidden gems in this portfolio! You've found ${found}/4 so far. Want a hint?`;
@@ -156,9 +167,20 @@ export function Chatbot() {
     
     // Hint requests
     if (lowerMessage.match(/hint|clue|help me find|give me/)) {
-      const egg = EASTER_EGGS[currentHintIndex];
-      setCurrentHintIndex((prev) => (prev + 1) % EASTER_EGGS.length);
-      return `Alright, here's one: ${egg.funHint}`;
+      return getUnfoundHint();
+    }
+    
+    // Progress check
+    if (lowerMessage.match(/progress|how many|found|status|score/)) {
+      const found = eggsFound.size;
+      if (found === 0) {
+        return "You haven't found any easter eggs yet! There are 4 hidden around the portfolio. Want a hint to get started?";
+      }
+      if (found === 4) {
+        return "You found ALL 4 easter eggs! Master Explorer status achieved! What else can I help you with?";
+      }
+      const foundNames = EASTER_EGGS.filter(e => eggsFound.has(e.id)).map(e => e.name).join(", ");
+      return `You've found ${found}/4 easter eggs! (${foundNames}) Keep exploring!`;
     }
     
     // Greetings
@@ -173,17 +195,17 @@ export function Chatbot() {
     
     // Projects
     if (lowerMessage.match(/project|work|portfolio|built|created|made/)) {
-      return "Ananya has some incredible projects! Check out Adaptive MR for healthcare accessibility, her work on the official Lens Studio Guide at Snap, or the award-winning Blood-Organ Donation app. Scroll down to Projects or click the button below!";
+      return "Ananya has some incredible projects! Check out Adaptive MR for healthcare accessibility, her work on the official Lens Studio Guide at Snap, or the award-winning Blood-Organ Donation app. Scroll down to Projects to explore!";
     }
     
     // Skills
     if (lowerMessage.match(/skill|tech|stack|know|language|tool/)) {
-      return "Ananya's a powerhouse! Unity 6 for XR, React & Next.js for web, Python for AI/ML, Figma for design, and she's certified in Lens Studio. She bridges tech and design beautifully!";
+      return "Ananya's a powerhouse! Unity 6 for XR, React & Next.js for web, Python for AI/ML, Figma for design, and she's certified in Lens Studio. Check out the About section for more!";
     }
     
     // Experience
     if (lowerMessage.match(/experience|job|work|career|company|intern/)) {
-      return "She's worked at Snap Inc. as a Lens Studio Specialist (how cool is that?!), conducted research at ADAPT Centre on adaptive interfaces, and has 4+ years in the XR space!";
+      return "She's worked at Snap Inc. as a Lens Studio Specialist, conducted research at ADAPT Centre on adaptive interfaces, and has 4+ years in the XR space!";
     }
     
     // Education
@@ -193,7 +215,7 @@ export function Chatbot() {
     
     // Publications/Research
     if (lowerMessage.match(/publication|research|paper|published|academic/)) {
-      return "She's got published research on adaptive MR interfaces for motor impairments and multimodal feedback in XR environments. Real cutting-edge stuff! Check the Publications section!";
+      return "She's got published research on adaptive MR interfaces for motor impairments and multimodal feedback in XR environments. Real cutting-edge stuff!";
     }
     
     // Contact
@@ -203,12 +225,12 @@ export function Chatbot() {
     
     // AR/VR/XR specific
     if (lowerMessage.match(/ar|vr|xr|mixed reality|augmented|virtual|metaverse|lens/)) {
-      return "AR/VR is Ananya's jam! From Snap Lens creation to Unity-based mixed reality healthcare apps, she's all about immersive experiences. Her Adaptive MR project is particularly groundbreaking!";
+      return "AR/VR is Ananya's jam! From Snap Lens creation to Unity-based mixed reality healthcare apps, she's all about immersive experiences.";
     }
     
     // Who/About Ananya
     if (lowerMessage.match(/who|about|ananya|herself|tell me/)) {
-      return "Ananya is an MSc HCI student, AR/VR developer, and UX designer passionate about creating tech that makes a real difference. She's worked at Snap, published research, and builds healthcare solutions!";
+      return "Ananya is an MSc HCI student, AR/VR developer, and UX designer passionate about creating tech that makes a real difference!";
     }
     
     // Thanks
@@ -226,11 +248,10 @@ export function Chatbot() {
       "Hmm, not sure about that one! But hey, have you checked out the Projects section? Some really cool AR/VR stuff there!",
       "I might not have the answer to that, but I DO know there are easter eggs hidden around... want a hint?",
       "Good question! I specialize in Ananya's portfolio though. Ask about her skills, projects, or try to find the 4 hidden secrets!",
-      "That's a thinker! While I ponder that, why not explore the Publications section? Some fascinating research there!",
     ];
     
     return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
-  }, [conversationState, currentHintIndex, eggsFound]);
+  }, [conversationState, eggsFound, getUnfoundHint]);
 
   const handleSendMessage = useCallback(() => {
     if (!inputValue.trim()) return;
@@ -262,42 +283,34 @@ export function Chatbot() {
   }, [inputValue, getBotResponse]);
 
   const handleQuickAction = (action: string) => {
-    let message = "";
+    let responseText = "";
+    
     switch (action) {
-      case "projects":
-        message = "Tell me about the projects";
+      case "hint":
+        responseText = getUnfoundHint();
         break;
-      case "publications":
-        message = "What research has Ananya published?";
+      case "progress":
+        const found = eggsFound.size;
+        if (found === 0) {
+          responseText = "You haven't found any easter eggs yet! There are 4 hidden around the portfolio. Want a hint?";
+        } else if (found === 4) {
+          responseText = "You found ALL 4 easter eggs! Master Explorer!";
+        } else {
+          const foundNames = EASTER_EGGS.filter(e => eggsFound.has(e.id)).map(e => e.name).join(", ");
+          responseText = `You've found ${found}/4! (${foundNames})`;
+        }
         break;
-      case "easter":
-        message = "Easter eggs?";
-        break;
+      default:
+        return;
     }
-    setInputValue(message);
-    setTimeout(() => {
-      const userMessage: Message = {
-        id: Date.now(),
-        text: message,
-        isUser: true,
-        timestamp: new Date(),
-      };
-setMessages((prev) => [...prev, userMessage]);
-    setIsTyping(true);
-      
-      setTimeout(() => {
-        const botResponse: Message = {
-          id: Date.now() + 1,
-          text: getBotResponse(message),
-          isUser: false,
-          timestamp: new Date(),
-        };
-setMessages((prev) => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 1000);
-      
-      setInputValue("");
-    }, 50);
+    
+    const botMessage: Message = {
+      id: Date.now(),
+      text: responseText,
+      isUser: false,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, botMessage]);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -423,21 +436,32 @@ setMessages((prev) => [...prev, botResponse]);
                     {isTyping ? "Thinking..." : "Ask me anything!"}
                   </p>
                 </div>
-                {/* Easter eggs counter */}
+                {/* Easter eggs counter with progress bar */}
                 <motion.div 
-                  className="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs text-primary-foreground flex items-center gap-1"
+                  className="flex flex-col items-end gap-1"
                   animate={eggsFoundCount > 0 ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 0.3 }}
                   key={eggsFoundCount}
                 >
-                  <Gift className="w-3 h-3" />
-                  <span>{eggsFoundCount}/4</span>
+                  <div className="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs text-primary-foreground flex items-center gap-1">
+                    <Gift className="w-3 h-3" />
+                    <span>Found: {eggsFoundCount}/4</span>
+                  </div>
+                  {/* Mini progress bar */}
+                  <div className="w-20 h-1.5 bg-secondary/50 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-primary to-accent"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(eggsFoundCount / 4) * 100}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </div>
                 </motion.div>
               </div>
             </div>
 
             {/* Messages area */}
-            <div className="h-[300px] max-sm:h-[calc(100%-180px)] overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <div className="h-[280px] max-sm:h-[calc(100%-200px)] overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               {messages.map((message, index) => (
                 <motion.div
                   key={message.id}
@@ -488,33 +512,24 @@ setMessages((prev) => [...prev, botResponse]);
             </div>
 
             {/* Quick actions */}
-            <div className="px-4 py-2 flex gap-2 overflow-x-auto">
+            <div className="px-4 py-2 flex gap-2">
               <Button
                 size="sm"
                 variant="outline"
-                className="text-xs rounded-full border-primary/30 hover:bg-primary/20 hover:border-primary/50 whitespace-nowrap transition-all"
-                onClick={() => handleQuickAction("projects")}
+                className="flex-1 text-xs rounded-full border-primary/30 hover:bg-primary/20 hover:border-primary/50 whitespace-nowrap transition-all"
+                onClick={() => handleQuickAction("hint")}
               >
-                <FolderOpen className="w-3 h-3 mr-1" />
-                Projects
+                <HelpCircle className="w-3.5 h-3.5 mr-1.5" />
+                Give Hint
               </Button>
               <Button
                 size="sm"
                 variant="outline"
-                className="text-xs rounded-full border-primary/30 hover:bg-primary/20 hover:border-primary/50 whitespace-nowrap transition-all"
-                onClick={() => handleQuickAction("publications")}
+                className="flex-1 text-xs rounded-full border-primary/30 hover:bg-primary/20 hover:border-primary/50 whitespace-nowrap transition-all"
+                onClick={() => handleQuickAction("progress")}
               >
-                <BookOpen className="w-3 h-3 mr-1" />
-                Publications
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-xs rounded-full border-primary/30 hover:bg-primary/20 hover:border-primary/50 whitespace-nowrap transition-all group"
-                onClick={() => handleQuickAction("easter")}
-              >
-                <Gift className="w-3 h-3 mr-1 group-hover:animate-bounce" />
-                Easter Eggs
+                <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
+                Show Progress
               </Button>
             </div>
 
@@ -527,40 +542,22 @@ setMessages((prev) => [...prev, botResponse]);
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder="Ask me anything..."
+                  placeholder="Ask about projects, skills, easter eggs..."
                   className="flex-1 px-4 py-2.5 rounded-full bg-secondary/50 border border-border/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
                 />
                 <Button
                   size="icon"
-                  className="rounded-full bg-primary hover:bg-primary/90 w-10 h-10 transition-transform hover:scale-105"
                   onClick={handleSendMessage}
-                  disabled={!inputValue.trim() || isTyping}
-                  aria-label="Send message"
+                  disabled={!inputValue.trim()}
+                  className="rounded-full bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
-              <p className="text-[10px] text-muted-foreground/50 text-center mt-2">
-                Press ESC to close
-              </p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Rainbow animation styles */}
-      <style jsx global>{`
-        @keyframes rainbow-shift {
-          0% { filter: hue-rotate(0deg); }
-          100% { filter: hue-rotate(360deg); }
-        }
-        .animate-rainbow-border {
-          background: linear-gradient(rgba(15, 23, 42, 0.97), rgba(15, 23, 42, 0.97)) padding-box,
-                      linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #ee82ee) border-box !important;
-          border: 2px solid transparent !important;
-          animation: rainbow-shift 2s linear infinite;
-        }
-      `}</style>
     </>
   );
 }
