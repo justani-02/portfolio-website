@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import { ExternalLink, Github, Sparkles, Brain, Activity, Users, ChevronDown, MapPin, Award, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -158,11 +159,47 @@ const projects = [
   },
 ];
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+};
+
+const headerVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: "easeOut",
+    },
+  },
+};
+
 export function Projects() {
-  const [isVisible, setIsVisible] = useState(false);
   const [expandedProjects, setExpandedProjects] = useState<Set<number>>(new Set());
   const [carouselIndexes, setCarouselIndexes] = useState<Record<number, number>>({});
   const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   const handleCarouselNav = (projectId: number, direction: "prev" | "next", totalImages: number) => {
     setCarouselIndexes((prev) => {
@@ -193,23 +230,6 @@ export function Projects() {
     });
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section
       ref={sectionRef}
@@ -220,35 +240,55 @@ export function Projects() {
       <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
-          }`}
+        <motion.div
+          variants={headerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="text-center mb-16"
         >
-          <p className="text-primary font-medium tracking-wide uppercase text-sm mb-4">
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-primary font-medium tracking-wide uppercase text-sm mb-4"
+          >
             Portfolio
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-balance">
+          </motion.p>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-balance"
+          >
             Featured Projects
-          </h2>
-          <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-4 text-muted-foreground max-w-2xl mx-auto"
+          >
             A collection of my work spanning AI research, healthcare technology,
             augmented reality, and social impact design.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project, index) => {
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {projects.map((project) => {
             const isFeatured = project.size === "featured";
             const isExpanded = expandedProjects.has(project.id);
             const hasExpandedDetails = project.hasExpandedView && project.expandedDetails;
             
             return (
-              <div
+              <motion.div
                 key={project.id}
+                variants={itemVariants}
                 className={`group relative rounded-3xl bg-card backdrop-blur-sm border transition-all duration-500 hover:-translate-y-2 overflow-hidden ${
                   isFeatured
                     ? "col-span-1 md:col-span-2 lg:col-span-3 border-teal-500/30 hover:border-teal-400/60"
@@ -259,12 +299,7 @@ export function Projects() {
                     : project.size === "medium"
                     ? "md:col-span-1"
                     : ""
-                } ${
-                  isVisible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-10"
                 }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 {/* Gradient Background */}
                 <div
@@ -558,10 +593,10 @@ export function Projects() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

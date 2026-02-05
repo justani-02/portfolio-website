@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 
 const experiences = [
   {
@@ -68,49 +69,92 @@ const experiences = [
   },
 ];
 
-const colorMap: Record<string, { dot: string; border: string; bg: string }> = {
+const colorMap: Record<string, { dot: string; border: string; bg: string; glow: string }> = {
   violet: {
     dot: "bg-violet-500",
     border: "border-violet-500/30",
     bg: "bg-violet-500/10",
+    glow: "shadow-violet-500/30",
   },
   cyan: {
     dot: "bg-cyan-500",
     border: "border-cyan-500/30",
     bg: "bg-cyan-500/10",
+    glow: "shadow-cyan-500/30",
   },
   emerald: {
     dot: "bg-emerald-500",
     border: "border-emerald-500/30",
     bg: "bg-emerald-500/10",
+    glow: "shadow-emerald-500/30",
   },
   pink: {
     dot: "bg-pink-500",
     border: "border-pink-500/30",
     bg: "bg-pink-500/10",
+    glow: "shadow-pink-500/30",
   },
 };
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+};
+
+// Timeline dot component with pulse animation
+function TimelineDot({ color, isInView }: { color: string; isInView: boolean }) {
+  const colors = colorMap[color];
+  
+  return (
+    <div className="absolute left-4 md:left-1/2 w-8 h-8 -ml-2 md:-translate-x-1/2 z-10 flex items-center justify-center">
+      {/* Outer pulse ring */}
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={isInView ? { 
+          scale: [1, 1.5, 1], 
+          opacity: [0.3, 0, 0.3]
+        } : {}}
+        transition={{ 
+          duration: 2, 
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className={`absolute inset-0 rounded-full ${colors.dot}`}
+      />
+      
+      {/* Inner dot */}
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={isInView ? { scale: 1 } : {}}
+        transition={{ duration: 0.4, delay: 0.2, type: "spring", stiffness: 200 }}
+        className={`w-4 h-4 rounded-full ${colors.dot} ring-4 ring-background shadow-lg ${colors.glow}`}
+      />
+    </div>
+  );
+}
+
 export function Experience() {
-  const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
     <section
@@ -122,60 +166,78 @@ export function Experience() {
       <div className="absolute top-1/2 right-0 w-1/4 h-1/4 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
-          }`}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
         >
-          <p className="text-primary font-medium tracking-wide uppercase text-sm mb-4">
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-primary font-medium tracking-wide uppercase text-sm mb-4"
+          >
             Journey
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-balance">
+          </motion.p>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-balance"
+          >
             Experience & Education
-          </h2>
-          <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-4 text-muted-foreground max-w-2xl mx-auto"
+          >
             A timeline of my professional journey, academic pursuits, and
             community involvement.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Timeline */}
         <div className="relative">
           {/* Glowing vertical line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 md:-translate-x-1/2">
+          <motion.div 
+            initial={{ scaleY: 0 }}
+            animate={isInView ? { scaleY: 1 } : {}}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            style={{ transformOrigin: "top" }}
+            className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 md:-translate-x-1/2"
+          >
             <div className="absolute inset-0 bg-gradient-to-b from-primary via-accent to-primary opacity-50" />
             <div className="absolute inset-0 bg-gradient-to-b from-primary via-accent to-primary blur-sm" />
-          </div>
+          </motion.div>
 
-          <div className="space-y-8 md:space-y-16">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="space-y-8 md:space-y-16"
+          >
             {experiences.map((exp, index) => {
               const colors = colorMap[exp.color];
               const isEven = index % 2 === 0;
 
               return (
-                <div
+                <motion.div
                   key={exp.id}
-                  className={`relative flex flex-col md:flex-row items-start transition-all duration-700 ${
-                    isVisible
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-10"
-                  }`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
+                  variants={itemVariants}
+                  className="relative flex flex-col md:flex-row items-start"
                 >
-                  {/* Enhanced Dot with icon */}
-                  <div
-                    className={`absolute left-4 md:left-1/2 w-8 h-8 -ml-2 md:-translate-x-1/2 z-10 flex items-center justify-center`}
-                  >
-                    <div className={`absolute inset-0 rounded-full ${colors.dot} opacity-20 animate-pulse`} />
-                    <div className={`w-4 h-4 rounded-full ${colors.dot} ring-4 ring-background shadow-lg shadow-${exp.color}-500/30`}>
-                      <div className={`absolute inset-0 rounded-full ${colors.dot} animate-ping opacity-30`} />
-                    </div>
-                  </div>
+                  {/* Enhanced Dot with pulse animation */}
+                  <TimelineDot color={exp.color} isInView={isInView} />
 
                   {/* Connector line to card */}
-                  <div 
+                  <motion.div 
+                    initial={{ scaleX: 0 }}
+                    animate={isInView ? { scaleX: 1 } : {}}
+                    transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+                    style={{ transformOrigin: isEven ? "right" : "left" }}
                     className={`hidden md:block absolute top-4 w-8 h-px ${colors.dot} opacity-50 ${
                       isEven ? "right-1/2 mr-4" : "left-1/2 ml-4"
                     }`}
@@ -187,9 +249,11 @@ export function Experience() {
                       isEven ? "md:pr-4 md:text-right md:mr-auto" : "md:pl-4 md:ml-auto"
                     }`}
                   >
-                    <div
+                    <motion.div
+                      whileHover={{ scale: 1.02, y: -4 }}
+                      transition={{ duration: 0.3 }}
                       className={`relative p-6 rounded-2xl bg-card/80 backdrop-blur-md border ${colors.border} group
-                        hover:bg-card hover:shadow-xl hover:shadow-${exp.color}-500/10 hover:scale-[1.02] hover:-translate-y-1
+                        hover:bg-card hover:shadow-xl hover:${colors.glow}
                         transition-all duration-300 cursor-default overflow-hidden`}
                     >
                       {/* Gradient accent */}
@@ -220,12 +284,12 @@ export function Experience() {
                           </span>
                         ))}
                       </div>
-                    </div>
+                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
