@@ -315,7 +315,4 @@ export function Hero() {
   );
 }
 
-// Preload the avatar model - only on client side
-if (typeof window !== "undefined") {
-  useGLTF.preload(AVATAR_URL);
-}
+
