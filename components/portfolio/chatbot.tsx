@@ -64,50 +64,68 @@ interface ConversationState {
   lastTopic: string | null;
 }
 
-// Animated avatar head component
-function AvatarHead({ expression }: { expression: "happy" | "thinking" | "idle" }) {
+// Animated avatar HEAD ONLY component - cropped to show face + hair
+function AvatarHead({ expression, isBlinking }: { expression: "happy" | "thinking" | "idle"; isBlinking: boolean }) {
   const { scene } = useGLTF(AVATAR_URL);
   const headRef = useRef<THREE.Group>(null);
+  const baseRotationY = useRef(0);
   
   useFrame((state) => {
     if (headRef.current) {
-      // Base floating animation
-      headRef.current.position.y = Math.sin(state.clock.elapsedTime * 1.5) * 0.02;
+      const time = state.clock.elapsedTime;
       
-      // Expression-based animations
+      // Subtle base breathing/floating motion
+      headRef.current.position.y = Math.sin(time * 1.2) * 0.008 - 1.35;
+      
+      // Expression-based head movements
       if (expression === "thinking") {
-        // Tilt head while thinking
-        headRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 2) * 0.08;
-        headRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 1.5) * 0.03;
+        // Head tilts side to side while thinking (5-10 degrees = 0.087-0.175 radians)
+        headRef.current.rotation.z = Math.sin(time * 2.5) * 0.12; // ~7 degrees
+        headRef.current.rotation.x = Math.sin(time * 1.8) * 0.05; // slight nod
+        // Smooth rotation towards thinking direction
+        baseRotationY.current += (Math.sin(time * 1.5) * 0.08 - baseRotationY.current) * 0.05;
       } else if (expression === "happy") {
-        // Bouncy nodding when happy
-        headRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 4) * 0.12;
-        headRef.current.position.y = Math.sin(state.clock.elapsedTime * 3) * 0.03 + 0.02;
+        // Happy bounce and nod
+        headRef.current.rotation.z = Math.sin(time * 3) * 0.06;
+        headRef.current.position.y = Math.sin(time * 4) * 0.015 - 1.35; // bouncy
+        // Slight wink-like tilt
+        baseRotationY.current += (Math.sin(time * 2) * 0.1 - baseRotationY.current) * 0.08;
       } else {
-        // Gentle sway when idle
-        headRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
+        // Idle: very subtle gentle sway
+        headRef.current.rotation.z = Math.sin(time * 0.8) * 0.03;
+        baseRotationY.current += (Math.sin(time * 0.5) * 0.04 - baseRotationY.current) * 0.03;
+      }
+      
+      headRef.current.rotation.y = baseRotationY.current;
+      
+      // Blink simulation - slightly close eyes area (scale Y trick)
+      if (isBlinking) {
+        headRef.current.scale.y = 0.98;
+      } else {
+        headRef.current.scale.y = 1;
       }
     }
   });
 
   return (
-    <group ref={headRef} position={[0, -0.3, 0]} scale={1.8}>
+    <group ref={headRef} position={[0, -1.35, 0]} scale={2.8}>
       <primitive object={scene.clone()} />
     </group>
   );
 }
 
-function AvatarScene({ expression }: { expression: "happy" | "thinking" | "idle" }) {
+function AvatarScene({ expression, isBlinking }: { expression: "happy" | "thinking" | "idle"; isBlinking: boolean }) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 2], fov: 30 }}
+      camera={{ position: [0, 0.15, 1.2], fov: 35 }}
       style={{ background: "transparent" }}
     >
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 5, 5]} intensity={0.8} />
-      <pointLight position={[-5, 5, 5]} intensity={0.4} color="#8b5cf6" />
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[3, 3, 5]} intensity={0.9} />
+      <pointLight position={[-3, 2, 4]} intensity={0.5} color="#8b5cf6" />
+      <pointLight position={[0, -1, 3]} intensity={0.3} color="#06b6d4" />
       <Suspense fallback={null}>
-        <AvatarHead expression={expression} />
+        <AvatarHead expression={expression} isBlinking={isBlinking} />
       </Suspense>
     </Canvas>
   );
@@ -134,6 +152,7 @@ export function Chatbot() {
     lastTopic: null,
   });
   const [isClient, setIsClient] = useState(false);
+  const [isBlinking, setIsBlinking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -141,6 +160,31 @@ export function Chatbot() {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Blink animation every 3-5 seconds
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const triggerBlink = () => {
+      setIsBlinking(true);
+      setTimeout(() => setIsBlinking(false), 150); // Quick blink
+    };
+
+    // Random interval between 3-5 seconds
+    const scheduleNextBlink = () => {
+      const delay = 3000 + Math.random() * 2000;
+      return setTimeout(() => {
+        triggerBlink();
+        blinkTimeout.current = scheduleNextBlink();
+      }, delay);
+    };
+
+    const blinkTimeout = { current: scheduleNextBlink() };
+
+    return () => {
+      if (blinkTimeout.current) clearTimeout(blinkTimeout.current);
+    };
+  }, [isOpen]);
 
   // Load found eggs from localStorage
   useEffect(() => {
@@ -423,10 +467,10 @@ export function Chatbot() {
         )}
       </AnimatePresence>
 
-      {/* Floating chat button */}
+      {/* Floating chat button with avatar head thumbnail */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/30 flex items-center justify-center overflow-hidden border-2 border-primary/30"
+        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-primary/80 to-accent/80 shadow-lg shadow-primary/30 flex items-center justify-center overflow-hidden border-2 border-primary/50"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         animate={{
@@ -463,12 +507,26 @@ export function Chatbot() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="relative"
+              className="relative w-full h-full"
             >
-              <Sparkles className="w-6 h-6 text-white" />
+              {/* Avatar head thumbnail */}
+              <div className="absolute inset-0 w-full h-full">
+                {isClient && (
+                  <Canvas
+                    camera={{ position: [0, 0.15, 1.2], fov: 35 }}
+                    style={{ background: "transparent" }}
+                  >
+                    <ambientLight intensity={0.8} />
+                    <directionalLight position={[3, 3, 5]} intensity={0.7} />
+                    <Suspense fallback={null}>
+                      <AvatarHead expression="idle" isBlinking={isBlinking} />
+                    </Suspense>
+                  </Canvas>
+                )}
+              </div>
               {/* Notification dot for eggs */}
               {eggsFoundCount > 0 && eggsFoundCount < 5 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-[10px] font-bold rounded-full flex items-center justify-center text-white">
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-[10px] font-bold rounded-full flex items-center justify-center text-white border border-white/30 z-10">
                   {eggsFoundCount}
                 </span>
               )}
@@ -532,7 +590,7 @@ export function Chatbot() {
                     transition: { repeat: Infinity, duration: 0.3 }
                   } : {}}
                 >
-                  {isClient && <AvatarScene expression={expression} />}
+                  {isClient && <AvatarScene expression={expression} isBlinking={isBlinking} />}
                 </motion.div>
               </div>
               {/* Easter eggs counter */}
