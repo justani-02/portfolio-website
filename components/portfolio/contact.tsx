@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react"
+import React from "react";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import { Mail, Linkedin, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,28 +31,35 @@ const contactInfo = [
   },
 ];
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut",
+    },
+  },
+};
+
 export function Contact() {
-  const [isVisible, setIsVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.2 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -78,40 +86,57 @@ export function Contact() {
       <div className="absolute bottom-0 left-1/4 w-1/4 h-1/4 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
-          }`}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
         >
-          <p className="text-primary font-medium tracking-wide uppercase text-sm mb-4">
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-primary font-medium tracking-wide uppercase text-sm mb-4"
+          >
             Get In Touch
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-balance">
+          </motion.p>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-balance"
+          >
             {"Let's Create Something Amazing"}
-          </h2>
-          <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-4 text-muted-foreground max-w-2xl mx-auto"
+          >
             Open to collaborations, research opportunities, and innovative
             projects.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Contact Form */}
-          <div
-            className={`transition-all duration-1000 ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.3 }}
           >
             <form
               onSubmit={handleSubmit}
               className="p-6 sm:p-8 rounded-3xl bg-card backdrop-blur-sm border border-border space-y-6"
             >
               <div className="grid sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.4, delay: 0.4 }}
+                  className="space-y-2"
+                >
                   <Label htmlFor="name" className="text-foreground">
                     Name
                   </Label>
@@ -119,10 +144,15 @@ export function Contact() {
                     id="name"
                     placeholder="Your name"
                     required
-                    className="bg-input border-border focus:border-primary"
+                    className="bg-input border-border focus:border-primary transition-all"
                   />
-                </div>
-                <div className="space-y-2">
+                </motion.div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.4, delay: 0.5 }}
+                  className="space-y-2"
+                >
                   <Label htmlFor="email" className="text-foreground">
                     Email
                   </Label>
@@ -131,12 +161,17 @@ export function Contact() {
                     type="email"
                     placeholder="your@email.com"
                     required
-                    className="bg-input border-border focus:border-primary"
+                    className="bg-input border-border focus:border-primary transition-all"
                   />
-                </div>
+                </motion.div>
               </div>
 
-              <div className="space-y-2">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.4, delay: 0.6 }}
+                className="space-y-2"
+              >
                 <Label htmlFor="subject" className="text-foreground">
                   Subject
                 </Label>
@@ -144,11 +179,16 @@ export function Contact() {
                   id="subject"
                   placeholder="What's this about?"
                   required
-                  className="bg-input border-border focus:border-primary"
+                  className="bg-input border-border focus:border-primary transition-all"
                 />
-              </div>
+              </motion.div>
 
-              <div className="space-y-2">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.4, delay: 0.7 }}
+                className="space-y-2"
+              >
                 <Label htmlFor="message" className="text-foreground">
                   Message
                 </Label>
@@ -157,46 +197,53 @@ export function Contact() {
                   placeholder="Tell me about your project or inquiry..."
                   rows={5}
                   required
-                  className="bg-input border-border focus:border-primary resize-none"
+                  className="bg-input border-border focus:border-primary resize-none transition-all"
                 />
-              </div>
+              </motion.div>
 
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                disabled={isSubmitting || isSubmitted}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.4, delay: 0.8 }}
               >
-                {isSubmitting ? (
-                  <span className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Sending...
-                  </span>
-                ) : isSubmitted ? (
-                  <span className="flex items-center gap-2">
-                    Message Sent!
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <Send className="w-4 h-4" />
-                    Send Message
-                  </span>
-                )}
-              </Button>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all hover:scale-[1.02]"
+                  disabled={isSubmitting || isSubmitted}
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Sending...
+                    </span>
+                  ) : isSubmitted ? (
+                    <span className="flex items-center gap-2">
+                      Message Sent!
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <Send className="w-4 h-4" />
+                      Send Message
+                    </span>
+                  )}
+                </Button>
+              </motion.div>
             </form>
-          </div>
+          </motion.div>
 
           {/* Contact Info */}
-          <div
-            className={`space-y-6 transition-all duration-1000 delay-200 ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="space-y-6"
           >
-            {contactInfo.map((info) => (
-              <div
+            {contactInfo.map((info, index) => (
+              <motion.div
                 key={info.label}
+                variants={itemVariants}
+                whileHover={{ x: 8, transition: { duration: 0.2 } }}
                 className="group p-6 rounded-2xl bg-card backdrop-blur-sm border border-border hover:border-primary/30 transition-all duration-300"
               >
                 {info.href ? (
@@ -210,9 +257,13 @@ export function Contact() {
                     }
                     className="flex items-center gap-4"
                   >
-                    <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <motion.div 
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ duration: 0.2 }}
+                      className="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                    >
                       <info.icon className="w-6 h-6" />
-                    </div>
+                    </motion.div>
                     <div>
                       <p className="text-sm text-muted-foreground">
                         {info.label}
@@ -235,11 +286,9 @@ export function Contact() {
                     </div>
                   </div>
                 )}
-              </div>
+              </motion.div>
             ))}
-
-            
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

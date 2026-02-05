@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Calendar, MapPin, Award, FileCheck, ChevronDown } from "lucide-react";
 
 const publications = [
@@ -37,10 +38,34 @@ const statusColorMap: Record<string, string> = {
   cyan: "bg-cyan-500",
 };
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+};
+
 export function Publications() {
-  const [isVisible, setIsVisible] = useState(false);
   const [expandedPubs, setExpandedPubs] = useState<Set<number>>(new Set());
   const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   const toggleExpanded = (pubId: number) => {
     setExpandedPubs((prev) => {
@@ -54,23 +79,6 @@ export function Publications() {
     });
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.2 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section
       ref={sectionRef}
@@ -81,44 +89,67 @@ export function Publications() {
       <div className="absolute bottom-1/4 left-0 w-1/3 h-1/3 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
-          }`}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
         >
-          <p className="text-primary font-medium tracking-wide uppercase text-sm mb-4">
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-primary font-medium tracking-wide uppercase text-sm mb-4"
+          >
             Research
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-balance">
+          </motion.p>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-balance"
+          >
             Publications
-          </h2>
-          <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-4 text-muted-foreground max-w-2xl mx-auto"
+          >
             Academic contributions to the fields of AI, healthcare technology,
             and urban systems.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Publications Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {publications.map((pub, index) => (
-            <div
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid md:grid-cols-2 gap-6"
+        >
+          {publications.map((pub) => (
+            <motion.div
               key={pub.id}
-              className={`group relative p-6 sm:p-8 rounded-3xl bg-card backdrop-blur-sm border border-border hover:border-primary/30 transition-all duration-500 hover:-translate-y-2 ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
-              }`}
-              style={{ transitionDelay: `${index * 150}ms` }}
+              variants={cardVariants}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="group relative p-6 sm:p-8 rounded-3xl bg-card backdrop-blur-sm border border-border hover:border-primary/30 transition-all duration-500"
             >
               {/* Gradient overlay on hover */}
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
               <div className="relative z-10">
                 {/* Status Badge */}
-                <div className="flex items-center gap-2 mb-4">
-                  <span
+                <motion.div 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.4, delay: 0.4 }}
+                  className="flex items-center gap-2 mb-4"
+                >
+                  <motion.span
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
                     className={`w-2 h-2 rounded-full ${
                       statusColorMap[pub.statusColor]
                     }`}
@@ -126,7 +157,7 @@ export function Publications() {
                   <span className="text-sm font-medium text-foreground">
                     {pub.status}
                   </span>
-                </div>
+                </motion.div>
 
                 {/* Title */}
                 <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-4 leading-tight group-hover:text-primary transition-colors">
@@ -163,28 +194,41 @@ export function Publications() {
                     >
                       <FileCheck className="w-4 h-4" />
                       <span>{pub.certificateImage ? "View Certificate" : "View Acceptance"}</span>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedPubs.has(pub.id) ? "rotate-180" : ""}`} />
+                      <motion.span
+                        animate={{ rotate: expandedPubs.has(pub.id) ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </motion.span>
                     </button>
                     
-                    <div className={`grid transition-all duration-500 ease-in-out ${
-                      expandedPubs.has(pub.id) ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0"
-                    }`}>
-                      <div className="overflow-hidden">
-                        <div className="rounded-xl overflow-hidden border border-border/50 bg-black/20">
-                          <img
-                            src={pub.certificateImage || pub.acceptanceImage}
-                            alt={pub.certificateImage ? `Certificate for ${pub.title}` : `Acceptance letter for ${pub.title}`}
-                            className="w-full h-auto object-contain"
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    <AnimatePresence>
+                      {expandedPubs.has(pub.id) && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.4, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pt-4">
+                            <div className="rounded-xl overflow-hidden border border-border/50 bg-black/20">
+                              <img
+                                src={pub.certificateImage || pub.acceptanceImage}
+                                alt={pub.certificateImage ? `Certificate for ${pub.title}` : `Acceptance letter for ${pub.title}`}
+                                className="w-full h-auto object-contain"
+                              />
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

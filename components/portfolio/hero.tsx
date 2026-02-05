@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, Suspense, createContext, useContext } from "react";
-import { Github, Linkedin, Mail, ChevronDown } from "lucide-react";
+import { Github, Linkedin, Mail, ChevronDown, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 
 // Dynamically import Three.js components to avoid SSR issues with ProgressEvent
 const Canvas = dynamic(
@@ -140,40 +141,64 @@ export function Hero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Content */}
-          <div
-            className={`space-y-6 text-center lg:text-left transition-all duration-1000 ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="space-y-6 text-center lg:text-left"
           >
             <div className="space-y-2">
-              <p className="text-primary font-medium tracking-wide uppercase text-sm">
+              <motion.p 
+                initial={{ opacity: 0, y: 10 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-primary font-medium tracking-wide uppercase text-sm"
+              >
                 Welcome to my portfolio
-              </p>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-tight text-balance">
+              </motion.p>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-tight text-balance"
+              >
                 Ananya{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
                   Chandraker
                 </span>
-              </h1>
-              <p className="text-lg sm:text-xl text-muted-foreground">
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 10 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="text-lg sm:text-xl text-muted-foreground"
+              >
                 MSc HCI Student | AR/VR Developer | UX Designer
-              </p>
+              </motion.p>
             </div>
 
-            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed text-pretty">
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={isVisible ? { opacity: 1 } : {}}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed text-pretty"
+            >
               Creating immersive experiences that bridge the digital and
               physical worlds. Currently pursuing Human-Computer Interaction at
               University College Dublin. Specializing in AR/VR development, user
               research, and designing solutions that create meaningful social
               impact.
-            </p>
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={isVisible ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start flex-wrap"
+            >
               <Button
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground transition-transform hover:scale-105"
                 asChild
               >
                 <a href="#projects">View Projects</a>
@@ -181,50 +206,61 @@ export function Hero() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-border hover:bg-secondary bg-transparent"
+                className="border-border hover:bg-secondary bg-transparent transition-transform hover:scale-105"
                 asChild
               >
                 <a href="#contact">Contact Me</a>
               </Button>
-            </div>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-primary/50 hover:bg-primary/10 bg-transparent group/resume transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
+                asChild
+              >
+                <a href="/Ananya_Chandraker_Resume.pdf" download="Ananya_Chandraker_Resume.pdf">
+                  <Download className="w-4 h-4 mr-2 group-hover/resume:animate-bounce" />
+                  Download Resume
+                </a>
+              </Button>
+            </motion.div>
 
             {/* Social Links */}
-            <div className="flex items-center gap-4 justify-center lg:justify-start pt-4 relative z-20">
-              <a
-                href="https://www.linkedin.com/in/ananya-chandraker/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-5 h-5 text-muted-foreground pointer-events-none" />
-              </a>
-              <a
-                href="https://github.com/justani-02"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
-                aria-label="GitHub"
-              >
-                <Github className="w-5 h-5 text-muted-foreground pointer-events-none" />
-              </a>
-              <a
-                href="mailto:ananyachandraker02@gmail.com"
-                className="p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
-                aria-label="Email"
-              >
-                <Mail className="w-5 h-5 text-muted-foreground pointer-events-none" />
-              </a>
-            </div>
-          </div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={isVisible ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="flex items-center gap-4 justify-center lg:justify-start pt-4 relative z-20"
+            >
+              {[
+                { href: "https://www.linkedin.com/in/ananya-chandraker/", Icon: Linkedin, label: "LinkedIn" },
+                { href: "https://github.com/justani-02", Icon: Github, label: "GitHub" },
+                { href: "mailto:ananyachandraker02@gmail.com", Icon: Mail, label: "Email" },
+              ].map((social, index) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  target={social.label !== "Email" ? "_blank" : undefined}
+                  rel={social.label !== "Email" ? "noopener noreferrer" : undefined}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+                  transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
+                  aria-label={social.label}
+                >
+                  <social.Icon className="w-5 h-5 text-muted-foreground pointer-events-none" />
+                </motion.a>
+              ))}
+            </motion.div>
+          </motion.div>
 
           {/* Right Content - 3D Avatar */}
-          <div
-            className={`relative transition-all duration-1000 delay-300 ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            className="relative"
           >
             <div 
               ref={avatarContainerRef}
@@ -232,24 +268,39 @@ export function Hero() {
               className="relative w-full max-w-[400px] h-[500px] lg:max-w-[450px] lg:h-[580px] mx-auto"
             >
               {/* Glow effect behind avatar */}
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-primary/5 to-transparent rounded-full blur-3xl" />
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={isVisible ? { opacity: 1 } : {}}
+                transition={{ duration: 1, delay: 0.5 }}
+                className="absolute inset-0 bg-gradient-to-t from-primary/20 via-primary/5 to-transparent rounded-full blur-3xl" 
+              />
               
               {/* Interaction hint */}
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-xs text-muted-foreground/60 flex items-center gap-2 z-20">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 1 }}
+                className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-xs text-muted-foreground/60 flex items-center gap-2 z-20"
+              >
                 <span className="inline-block w-4 h-4 border border-muted-foreground/40 rounded-sm" />
                 <span>Drag to rotate</span>
-              </div>
+              </motion.div>
               
               {/* 3D Avatar with React Three Fiber */}
               <div className="relative z-10 w-full h-full">
                 {isClient && <AvatarScene mousePosition={mousePosition} />}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 1.2 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
           <a
             href="#about"
             className="flex flex-col items-center gap-1 group"
@@ -258,11 +309,13 @@ export function Hero() {
             <ChevronDown className="w-6 h-6 text-muted-foreground group-hover:text-primary animate-bounce transition-colors" />
             <ChevronDown className="w-6 h-6 text-muted-foreground/50 group-hover:text-primary/50 -mt-4 animate-bounce transition-colors" style={{ animationDelay: "0.15s" }} />
           </a>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
-// Preload the avatar model
-useGLTF.preload(AVATAR_URL);
+// Preload the avatar model - only on client side
+if (typeof window !== "undefined") {
+  useGLTF.preload(AVATAR_URL);
+}

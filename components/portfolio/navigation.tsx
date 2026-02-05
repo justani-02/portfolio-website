@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
@@ -105,6 +105,14 @@ export function Navigation() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
+            <a
+              href="/Ananya_Chandraker_Resume.pdf"
+              download="Ananya_Chandraker_Resume.pdf"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/30 group"
+            >
+              <Download className="w-4 h-4 group-hover:animate-bounce" />
+              Resume
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -143,6 +151,15 @@ export function Navigation() {
               {item.label}
             </a>
           ))}
+          <a
+            href="/Ananya_Chandraker_Resume.pdf"
+            download="Ananya_Chandraker_Resume.pdf"
+            className="flex items-center justify-center gap-2 w-full px-4 py-3 text-base font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-xl transition-all duration-300"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <Download className="w-5 h-5" />
+            Download Resume
+          </a>
         </div>
       </div>
     </nav>
