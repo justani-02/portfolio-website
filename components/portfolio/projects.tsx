@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { ExternalLink, Github, Sparkles, Brain, Activity, Users, ChevronDown, Award, TrendingUp, ChevronLeft, ChevronRight, Play, X, Image as ImageIcon, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -458,8 +458,50 @@ export function Projects() {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<Array<{ src: string; caption: string; alt: string }>>([]);
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const [clickedArtworks, setClickedArtworks] = useState<Set<number>>(new Set());
+  const [showColorful, setShowColorful] = useState(false);
+  const [colorfulEggFound, setColorfulEggFound] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+  // Check if colorful egg already found from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("portfolio-eggs-found");
+      if (saved) {
+        const found = new Set(JSON.parse(saved));
+        if (found.has(2)) {
+          setColorfulEggFound(true);
+        }
+      }
+    }
+  }, []);
+
+  const handleArtworkClick = (artworkIndex: number) => {
+    if (colorfulEggFound) return;
+    
+    const newClicked = new Set(clickedArtworks);
+    newClicked.add(artworkIndex);
+    setClickedArtworks(newClicked);
+    
+    // Check if all 3 artworks have been clicked
+    if (newClicked.size >= 3) {
+      setShowColorful(true);
+      setColorfulEggFound(true);
+      
+      // Dispatch custom event to notify chatbot
+      window.dispatchEvent(
+        new CustomEvent("easterEggFound", {
+          detail: { eggId: 2, eggName: "COLORFUL" },
+        })
+      );
+      
+      // Hide effect after 5 seconds
+      setTimeout(() => {
+        setShowColorful(false);
+      }, 5000);
+    }
+  };
 
   // Filter projects
   const filteredProjects = activeFilter === "all" 
@@ -514,6 +556,39 @@ export function Projects() {
 
   return (
     <>
+      {/* Colorful emotion overlay */}
+      <AnimatePresence>
+        {showColorful && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 pointer-events-none z-50"
+          >
+            <motion.div
+              animate={{
+                background: [
+                  "linear-gradient(45deg, rgba(236, 72, 153, 0.3), rgba(139, 92, 246, 0.3))",
+                  "linear-gradient(90deg, rgba(34, 211, 238, 0.3), rgba(139, 92, 246, 0.3))",
+                  "linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(236, 72, 153, 0.3))",
+                  "linear-gradient(180deg, rgba(139, 92, 246, 0.3), rgba(34, 211, 238, 0.3))",
+                ]
+              }}
+              transition={{ duration: 4, repeat: Infinity }}
+              className="absolute inset-0"
+            />
+            <motion.p
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-white text-center whitespace-nowrap"
+            >
+              Emotional journey complete 💜
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <section
         ref={sectionRef}
         id="projects"
@@ -690,13 +765,23 @@ export function Projects() {
                             {/* Images */}
                             {project.carouselImages.map((image, imgIndex) => {
                               const currentIndex = carouselIndexes[project.id] || 0;
+                              const isAwarenessProject = project.id === 6;
+                              const isArtworkClicked = clickedArtworks.has(imgIndex);
+                              
                               return (
                                 <div
                                   key={imgIndex}
                                   className={`absolute inset-0 transition-opacity duration-700 ease-in-out cursor-pointer ${
                                     imgIndex === currentIndex ? "opacity-100" : "opacity-0"
-                                  }`}
-                                  onClick={() => openGalleryLightbox(project.carouselImages!, imgIndex)}
+                                  } ${isAwarenessProject && isArtworkClicked && !colorfulEggFound ? "ring-2 ring-primary ring-inset" : ""}`}
+                                  onClick={() => {
+                                    // Track artwork clicks for awareness project
+                                    if (isAwarenessProject) {
+                                      handleArtworkClick(imgIndex);
+                                    }
+                                    openGalleryLightbox(project.carouselImages!, imgIndex);
+                                  }}
+                                  title={isAwarenessProject && !colorfulEggFound ? `Click artwork ${imgIndex + 1}/3 ${isArtworkClicked ? "(clicked)" : ""}` : undefined}
                                 >
                                   <img
                                     src={image.src}

@@ -64,8 +64,50 @@ const cardVariants = {
 
 export function Publications() {
   const [expandedPubs, setExpandedPubs] = useState<Set<number>>(new Set());
+  const [clickedPubs, setClickedPubs] = useState<Set<number>>(new Set());
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [researcherEggFound, setResearcherEggFound] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+  // Check if already found from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("portfolio-eggs-found");
+      if (saved) {
+        const found = new Set(JSON.parse(saved));
+        if (found.has(4)) {
+          setResearcherEggFound(true);
+        }
+      }
+    }
+  }, []);
+
+  const handlePubClick = (pubId: number) => {
+    if (researcherEggFound) return;
+    
+    const newClicked = new Set(clickedPubs);
+    newClicked.add(pubId);
+    setClickedPubs(newClicked);
+    
+    // Check if both publications have been clicked
+    if (newClicked.size >= 2) {
+      setShowConfetti(true);
+      setResearcherEggFound(true);
+      
+      // Dispatch custom event to notify chatbot
+      window.dispatchEvent(
+        new CustomEvent("easterEggFound", {
+          detail: { eggId: 4, eggName: "RESEARCHER" },
+        })
+      );
+      
+      // Hide confetti after 5 seconds
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 5000);
+    }
+  };
 
   const toggleExpanded = (pubId: number) => {
     setExpandedPubs((prev) => {
@@ -85,6 +127,46 @@ export function Publications() {
       id="publications"
       className="py-20 md:py-32 relative overflow-hidden"
     >
+      {/* Confetti effect */}
+      <AnimatePresence>
+        {showConfetti && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 pointer-events-none z-50"
+          >
+            {[...Array(50)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ 
+                  x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1000), 
+                  y: -20,
+                  rotate: 0
+                }}
+                animate={{ 
+                  y: (typeof window !== "undefined" ? window.innerHeight : 800) + 20,
+                  rotate: Math.random() * 720 - 360
+                }}
+                transition={{ duration: 2 + Math.random() * 2, delay: Math.random() * 0.5 }}
+                className="absolute w-3 h-3 rounded-sm"
+                style={{
+                  backgroundColor: ["#8b5cf6", "#ec4899", "#06b6d4", "#22c55e", "#f59e0b"][Math.floor(Math.random() * 5)]
+                }}
+              />
+            ))}
+            <motion.p
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-primary whitespace-nowrap"
+            >
+              Research Explorer unlocked! 📚
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Background decoration */}
       <div className="absolute bottom-1/4 left-0 w-1/3 h-1/3 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -134,7 +216,14 @@ export function Publications() {
               key={pub.id}
               variants={cardVariants}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="group relative p-6 sm:p-8 rounded-3xl bg-card backdrop-blur-sm border border-border hover:border-primary/30 transition-all duration-500"
+              whileTap={!researcherEggFound ? { scale: 0.98 } : {}}
+              onClick={() => handlePubClick(pub.id)}
+              className={`group relative p-6 sm:p-8 rounded-3xl bg-card backdrop-blur-sm border transition-all duration-500 ${
+                clickedPubs.has(pub.id) 
+                  ? "border-primary/50 ring-2 ring-primary/20" 
+                  : "border-border hover:border-primary/30"
+              } ${!researcherEggFound ? "cursor-pointer" : ""}`}
+              title={researcherEggFound ? "Researcher unlocked!" : `Click to explore (${clickedPubs.size}/2 clicked)`}
             >
               {/* Gradient overlay on hover */}
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
