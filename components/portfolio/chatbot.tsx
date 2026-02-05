@@ -5,37 +5,31 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, X, Sparkles, BookOpen, FolderOpen, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Easter eggs data with fun hints
+// Easter eggs data with fun hints - 4 click-based eggs
 const EASTER_EGGS = [
   { 
     id: 1, 
-    name: "KONAMI MASTER", 
-    hint: "A classic gamer knows the code... Up Up Down Down Left Right Left Right B A. Try it anywhere!",
-    funHint: "Old school gamers know this one! Think Contra, think 30 lives..."
+    name: "RUNNER MODE", 
+    hint: "See that shoe icon at the bottom? Try clicking it multiple times!",
+    funHint: "A marathon champion never stops running... find the shoe in the footer and click it 3 times!"
   },
   { 
     id: 2, 
-    name: "AVATAR WHISPERER", 
-    hint: "My 3D avatar in the hero section loves attention. Give it some clicks and see what happens!",
-    funHint: "That 3D avatar up top? She's ticklish... try clicking multiple times!"
+    name: "COLORFUL", 
+    hint: "The awareness campaign tells a story... click each artwork in order!",
+    funHint: "Those 3 awareness artworks show an emotional journey. Click all of them to complete it!"
   },
   { 
     id: 3, 
-    name: "FOOTER DETECTIVE", 
-    hint: "The footer holds secrets. Hover over my name for a few seconds and wait...",
-    funHint: "Patience is a virtue! The footer rewards those who linger..."
+    name: "DANCE TIME", 
+    hint: "My avatar is clickable... try clicking it a few times!",
+    funHint: "That 3D avatar up top? She loves to dance! Click 5 times and watch the party start!"
   },
   { 
     id: 4, 
-    name: "RAINBOW CODER", 
-    hint: "Type something colorful in this chat! Think Roy G. Biv...",
-    funHint: "What word describes all the colors together? Type it right here!"
-  },
-  { 
-    id: 5, 
-    name: "NIGHT OWL", 
-    hint: "Some secrets only reveal themselves when the clock strikes midnight (00:00)!",
-    funHint: "Are you a night owl? Visit at the witching hour for a surprise!"
+    name: "RESEARCHER", 
+    hint: "Check out my published papers... click both of them!",
+    funHint: "I'm proud of my publications! Click both research cards to unlock the Research Explorer badge!"
   },
 ];
 
@@ -58,7 +52,7 @@ export function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hey there! I'm Ananya's portfolio buddy. I know all about her amazing work in AR/VR, healthcare tech, and UX design. Also... there are 5 hidden easter eggs in this portfolio. Want to find them all?",
+      text: "Hey there! I'm Ananya's portfolio buddy. I know all about her amazing work in AR/VR, healthcare tech, and UX design. Also... there are 4 hidden easter eggs in this portfolio. Want to find them all?",
       isUser: false,
       timestamp: new Date(),
     },
@@ -66,7 +60,6 @@ export function Chatbot() {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [eggsFound, setEggsFound] = useState<Set<number>>(new Set());
-  const [showRainbow, setShowRainbow] = useState(false);
   const [currentHintIndex, setCurrentHintIndex] = useState(0);
   const [conversationState, setConversationState] = useState<ConversationState>({
     awaitingHintConfirmation: false,
@@ -111,7 +104,7 @@ export function Chatbot() {
         setEggsFound((prev) => new Set([...prev, eggId]));
         // Auto-open chat and announce
         setIsOpen(true);
-        const remaining = 5 - eggsFound.size - 1;
+        const remaining = 4 - eggsFound.size - 1;
         const newMessage: Message = {
           id: Date.now(),
           text: `Woohoo! You found ${eggName}! ${remaining > 0 ? `${remaining} more to go! Keep hunting!` : "That's all 5! You're a true explorer!"}`,
@@ -137,18 +130,6 @@ export function Chatbot() {
   const getBotResponse = useCallback((userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase().trim();
     
-    // Check for rainbow easter egg
-    if (lowerMessage === "rainbow" || lowerMessage.includes("rainbow")) {
-      setShowRainbow(true);
-      setTimeout(() => setShowRainbow(false), 5000);
-      if (!eggsFound.has(4)) {
-        setEggsFound((prev) => new Set([...prev, 4]));
-        const remaining = 5 - eggsFound.size - 1;
-        return `AMAZING! You found RAINBOW CODER! Watch the magic... ${remaining > 0 ? `${remaining} more eggs to discover!` : "That's all 5! You're legendary!"}`;
-      }
-      return "Ooh, pretty colors! You've already found this one though. Try the other hints!";
-    }
-    
     // Check for yes/confirmation when awaiting hint
     if (conversationState.awaitingHintConfirmation) {
       if (lowerMessage.match(/^(yes|yeah|yep|sure|ok|okay|please|yea|y|definitely|absolutely)$/)) {
@@ -166,11 +147,11 @@ export function Chatbot() {
     // Easter eggs inquiry
     if (lowerMessage.match(/easter|eggs?|hidden|secret|hunt/)) {
       const found = eggsFound.size;
-      if (found === 5) {
-        return "You found ALL 5 easter eggs! You're amazing! Want to know more about Ananya's work?";
+      if (found === 4) {
+        return "You found ALL 4 easter eggs! You're amazing! Want to know more about Ananya's work?";
       }
       setConversationState({ awaitingHintConfirmation: true, lastTopic: "easter" });
-      return `There are 5 hidden gems in this portfolio! You've found ${found}/5 so far. Want a hint?`;
+      return `There are 4 hidden gems in this portfolio! You've found ${found}/4 so far. Want a hint?`;
     }
     
     // Hint requests
@@ -244,7 +225,7 @@ export function Chatbot() {
     const defaultResponses = [
       "Hmm, not sure about that one! But hey, have you checked out the Projects section? Some really cool AR/VR stuff there!",
       "I might not have the answer to that, but I DO know there are easter eggs hidden around... want a hint?",
-      "Good question! I specialize in Ananya's portfolio though. Ask about her skills, projects, or try to find the 5 hidden secrets!",
+      "Good question! I specialize in Ananya's portfolio though. Ask about her skills, projects, or try to find the 4 hidden secrets!",
       "That's a thinker! While I ponder that, why not explore the Publications section? Some fascinating research there!",
     ];
     
@@ -330,22 +311,6 @@ setMessages((prev) => [...prev, botResponse]);
 
   return (
     <>
-      {/* Rainbow overlay for easter egg */}
-      <AnimatePresence>
-        {showRainbow && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 pointer-events-none z-40"
-            style={{
-              background: "linear-gradient(45deg, rgba(255,0,0,0.15), rgba(255,165,0,0.15), rgba(255,255,0,0.15), rgba(0,128,0,0.15), rgba(0,0,255,0.15), rgba(75,0,130,0.15), rgba(238,130,238,0.15))",
-              animation: "rainbow-shift 2s linear infinite",
-            }}
-          />
-        )}
-      </AnimatePresence>
-
       {/* Floating chat button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
@@ -390,7 +355,7 @@ setMessages((prev) => [...prev, botResponse]);
             >
               <Sparkles className="w-6 h-6 text-white" />
               {/* Notification dot for eggs */}
-              {eggsFoundCount > 0 && eggsFoundCount < 5 && (
+              {eggsFoundCount > 0 && eggsFoundCount < 4 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-[10px] font-bold rounded-full flex items-center justify-center text-white">
                   {eggsFoundCount}
                 </span>
@@ -423,16 +388,11 @@ setMessages((prev) => [...prev, botResponse]);
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={`fixed z-50 overflow-hidden
-              bottom-24 right-6 w-[360px] sm:w-[400px] h-[500px] rounded-3xl
-              max-sm:inset-0 max-sm:w-full max-sm:h-full max-sm:rounded-none max-sm:bottom-0 max-sm:right-0
-              ${showRainbow ? "animate-rainbow-border" : ""}`}
+            className="fixed z-50 overflow-hidden bottom-24 right-6 w-[360px] sm:w-[400px] h-[500px] rounded-3xl max-sm:inset-0 max-sm:w-full max-sm:h-full max-sm:rounded-none max-sm:bottom-0 max-sm:right-0"
             style={{
               background: "rgba(15, 23, 42, 0.97)",
               backdropFilter: "blur(20px)",
-              border: showRainbow
-                ? "2px solid transparent"
-                : "1px solid rgba(139, 92, 246, 0.3)",
+              border: "1px solid rgba(139, 92, 246, 0.3)",
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(139, 92, 246, 0.2)",
             }}
           >
@@ -471,7 +431,7 @@ setMessages((prev) => [...prev, botResponse]);
                   key={eggsFoundCount}
                 >
                   <Gift className="w-3 h-3" />
-                  <span>{eggsFoundCount}/5</span>
+                  <span>{eggsFoundCount}/4</span>
                 </motion.div>
               </div>
             </div>

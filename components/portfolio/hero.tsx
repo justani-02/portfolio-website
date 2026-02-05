@@ -100,13 +100,52 @@ export function Hero() {
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isClient, setIsClient] = useState(false);
+  const [avatarClicks, setAvatarClicks] = useState(0);
+  const [showDanceMode, setShowDanceMode] = useState(false);
+  const [danceEggFound, setDanceEggFound] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const avatarContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsVisible(true);
     setIsClient(true);
+    
+    // Check if dance egg already found
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("portfolio-eggs-found");
+      if (saved) {
+        const found = new Set(JSON.parse(saved));
+        if (found.has(3)) {
+          setDanceEggFound(true);
+        }
+      }
+    }
   }, []);
+
+  const handleAvatarClick = () => {
+    if (danceEggFound) return;
+    
+    const newCount = avatarClicks + 1;
+    setAvatarClicks(newCount);
+    
+    if (newCount >= 5) {
+      // Trigger dance easter egg
+      setShowDanceMode(true);
+      setDanceEggFound(true);
+      
+      // Dispatch custom event to notify chatbot
+      window.dispatchEvent(
+        new CustomEvent("easterEggFound", {
+          detail: { eggId: 3, eggName: "DANCE TIME" },
+        })
+      );
+      
+      // Hide effect after 5 seconds
+      setTimeout(() => {
+        setShowDanceMode(false);
+      }, 5000);
+    }
+  };
 
   // Track mouse position relative to avatar container
   useEffect(() => {
@@ -262,17 +301,50 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             className="relative"
           >
+            {/* Dance mode disco lights */}
+            {showDanceMode && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 z-30 pointer-events-none overflow-hidden rounded-full"
+              >
+                <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-cyan-500/30" />
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="absolute top-1/2 left-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2"
+                  style={{
+                    background: "conic-gradient(from 0deg, transparent, rgba(139, 92, 246, 0.4), transparent, rgba(236, 72, 153, 0.4), transparent, rgba(34, 211, 238, 0.4), transparent)"
+                  }}
+                />
+                <motion.p
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute bottom-10 left-1/2 -translate-x-1/2 text-xl font-bold text-white whitespace-nowrap z-40"
+                >
+                  Let's celebrate! 🎉
+                </motion.p>
+              </motion.div>
+            )}
+            
             <div 
               ref={avatarContainerRef}
               data-avatar-container
-              className="relative w-full max-w-[400px] h-[500px] lg:max-w-[450px] lg:h-[580px] mx-auto"
+              onClick={handleAvatarClick}
+              className={`relative w-full max-w-[400px] h-[500px] lg:max-w-[450px] lg:h-[580px] mx-auto ${
+                !danceEggFound ? "cursor-pointer" : ""
+              }`}
+              title={danceEggFound ? "Dance Time unlocked!" : `Click me! (${avatarClicks}/5)`}
             >
               {/* Glow effect behind avatar */}
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={isVisible ? { opacity: 1 } : {}}
                 transition={{ duration: 1, delay: 0.5 }}
-                className="absolute inset-0 bg-gradient-to-t from-primary/20 via-primary/5 to-transparent rounded-full blur-3xl" 
+                className={`absolute inset-0 bg-gradient-to-t from-primary/20 via-primary/5 to-transparent rounded-full blur-3xl ${
+                  showDanceMode ? "animate-pulse" : ""
+                }`}
               />
               
               {/* Interaction hint */}
@@ -287,9 +359,20 @@ export function Hero() {
               </motion.div>
               
               {/* 3D Avatar with React Three Fiber */}
-              <div className="relative z-10 w-full h-full">
+              <motion.div 
+                className="relative z-10 w-full h-full"
+                animate={showDanceMode ? { 
+                  rotate: [0, 10, -10, 10, 0],
+                  scale: [1, 1.05, 1, 1.05, 1]
+                } : {}}
+                transition={showDanceMode ? { 
+                  duration: 0.5, 
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                } : {}}
+              >
                 {isClient && <AvatarScene mousePosition={mousePosition} />}
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
