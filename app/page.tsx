@@ -7,6 +7,7 @@ import { Publications } from "@/components/portfolio/publications";
 import { Contact } from "@/components/portfolio/contact";
 import { Footer } from "@/components/portfolio/footer";
 import { CustomCursor } from "@/components/portfolio/custom-cursor";
+import { Chatbot } from "@/components/portfolio/chatbot";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       <Publications />
       <Contact />
       <Footer />
+      <Chatbot />
     </main>
   );
 }
