@@ -1,22 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect, Suspense, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, X, Sparkles, BookOpen, FolderOpen, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import dynamic from "next/dynamic";
-
-// Dynamically import Three.js components
-const Canvas = dynamic(
-  () => import("@react-three/fiber").then((mod) => mod.Canvas),
-  { ssr: false }
-);
-
-import { useFrame } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
-import * as THREE from "three";
-
-const AVATAR_URL = "https://models.readyplayer.me/695ab54e8f9c70cbc92c8821.glb";
 
 // Easter eggs data with fun hints
 const EASTER_EGGS = [
@@ -64,72 +51,7 @@ interface ConversationState {
   lastTopic: string | null;
 }
 
-// Animated avatar HEAD ONLY component - cropped to show face + hair
-function AvatarHead({ expression, isBlinking }: { expression: "happy" | "thinking" | "idle"; isBlinking: boolean }) {
-  const { scene } = useGLTF(AVATAR_URL);
-  const headRef = useRef<THREE.Group>(null);
-  const baseRotationY = useRef(0);
-  
-  useFrame((state) => {
-    if (headRef.current) {
-      const time = state.clock.elapsedTime;
-      
-      // Subtle base breathing/floating motion
-      headRef.current.position.y = Math.sin(time * 1.2) * 0.008 - 1.35;
-      
-      // Expression-based head movements
-      if (expression === "thinking") {
-        // Head tilts side to side while thinking (5-10 degrees = 0.087-0.175 radians)
-        headRef.current.rotation.z = Math.sin(time * 2.5) * 0.12; // ~7 degrees
-        headRef.current.rotation.x = Math.sin(time * 1.8) * 0.05; // slight nod
-        // Smooth rotation towards thinking direction
-        baseRotationY.current += (Math.sin(time * 1.5) * 0.08 - baseRotationY.current) * 0.05;
-      } else if (expression === "happy") {
-        // Happy bounce and nod
-        headRef.current.rotation.z = Math.sin(time * 3) * 0.06;
-        headRef.current.position.y = Math.sin(time * 4) * 0.015 - 1.35; // bouncy
-        // Slight wink-like tilt
-        baseRotationY.current += (Math.sin(time * 2) * 0.1 - baseRotationY.current) * 0.08;
-      } else {
-        // Idle: very subtle gentle sway
-        headRef.current.rotation.z = Math.sin(time * 0.8) * 0.03;
-        baseRotationY.current += (Math.sin(time * 0.5) * 0.04 - baseRotationY.current) * 0.03;
-      }
-      
-      headRef.current.rotation.y = baseRotationY.current;
-      
-      // Blink simulation - slightly close eyes area (scale Y trick)
-      if (isBlinking) {
-        headRef.current.scale.y = 0.98;
-      } else {
-        headRef.current.scale.y = 1;
-      }
-    }
-  });
 
-  return (
-    <group ref={headRef} position={[0, -1.35, 0]} scale={2.8}>
-      <primitive object={scene.clone()} />
-    </group>
-  );
-}
-
-function AvatarScene({ expression, isBlinking }: { expression: "happy" | "thinking" | "idle"; isBlinking: boolean }) {
-  return (
-    <Canvas
-      camera={{ position: [0, 0.15, 1.2], fov: 35 }}
-      style={{ background: "transparent" }}
-    >
-      <ambientLight intensity={0.7} />
-      <directionalLight position={[3, 3, 5]} intensity={0.9} />
-      <pointLight position={[-3, 2, 4]} intensity={0.5} color="#8b5cf6" />
-      <pointLight position={[0, -1, 3]} intensity={0.3} color="#06b6d4" />
-      <Suspense fallback={null}>
-        <AvatarHead expression={expression} isBlinking={isBlinking} />
-      </Suspense>
-    </Canvas>
-  );
-}
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -143,7 +65,6 @@ export function Chatbot() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [expression, setExpression] = useState<"happy" | "thinking" | "idle">("idle");
   const [eggsFound, setEggsFound] = useState<Set<number>>(new Set());
   const [showRainbow, setShowRainbow] = useState(false);
   const [currentHintIndex, setCurrentHintIndex] = useState(0);
@@ -151,40 +72,8 @@ export function Chatbot() {
     awaitingHintConfirmation: false,
     lastTopic: null,
   });
-  const [isClient, setIsClient] = useState(false);
-  const [isBlinking, setIsBlinking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // Initialize client-side
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Blink animation every 3-5 seconds
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    const triggerBlink = () => {
-      setIsBlinking(true);
-      setTimeout(() => setIsBlinking(false), 150); // Quick blink
-    };
-
-    // Random interval between 3-5 seconds
-    const scheduleNextBlink = () => {
-      const delay = 3000 + Math.random() * 2000;
-      return setTimeout(() => {
-        triggerBlink();
-        blinkTimeout.current = scheduleNextBlink();
-      }, delay);
-    };
-
-    const blinkTimeout = { current: scheduleNextBlink() };
-
-    return () => {
-      if (blinkTimeout.current) clearTimeout(blinkTimeout.current);
-    };
-  }, [isOpen]);
 
   // Load found eggs from localStorage
   useEffect(() => {
@@ -230,8 +119,6 @@ export function Chatbot() {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, newMessage]);
-        setExpression("happy");
-        setTimeout(() => setExpression("idle"), 3000);
       }
     };
 
@@ -378,7 +265,6 @@ export function Chatbot() {
     const userInput = inputValue;
     setInputValue("");
     setIsTyping(true);
-    setExpression("thinking");
     
     // Simulate typing delay with variable timing
     const typingDelay = 800 + Math.random() * 700;
@@ -391,10 +277,6 @@ export function Chatbot() {
       };
       setMessages((prev) => [...prev, botResponse]);
       setIsTyping(false);
-      setExpression("happy");
-      
-      // Reset to idle after celebrating
-      setTimeout(() => setExpression("idle"), 2500);
     }, typingDelay);
   }, [inputValue, getBotResponse]);
 
@@ -419,9 +301,8 @@ export function Chatbot() {
         isUser: true,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, userMessage]);
-      setIsTyping(true);
-      setExpression("thinking");
+setMessages((prev) => [...prev, userMessage]);
+    setIsTyping(true);
       
       setTimeout(() => {
         const botResponse: Message = {
@@ -430,11 +311,9 @@ export function Chatbot() {
           isUser: false,
           timestamp: new Date(),
         };
-        setMessages((prev) => [...prev, botResponse]);
-        setIsTyping(false);
-        setExpression("happy");
-        setTimeout(() => setExpression("idle"), 2500);
-      }, 1000);
+setMessages((prev) => [...prev, botResponse]);
+      setIsTyping(false);
+    }, 1000);
       
       setInputValue("");
     }, 50);
@@ -566,41 +445,39 @@ export function Chatbot() {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Header with avatar */}
-            <div className="relative h-32 bg-gradient-to-b from-primary/20 to-transparent">
-              <div className="absolute inset-0 flex items-center justify-center">
+            {/* Header */}
+            <div className="relative p-4 border-b border-border/30 bg-gradient-to-r from-primary/10 to-accent/10">
+              <div className="flex items-center gap-3">
                 <motion.div 
-                  className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-primary/30 to-accent/30 border-2 border-primary/40"
+                  className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center"
                   animate={isTyping ? { 
-                    rotate: [-2, 2, -2],
-                    transition: { repeat: Infinity, duration: 0.3 }
+                    rotate: [-5, 5, -5],
+                    transition: { repeat: Infinity, duration: 0.4 }
                   } : {}}
                 >
-                  {isClient && <AvatarScene expression={expression} isBlinking={isBlinking} />}
+                  <Sparkles className="w-5 h-5 text-white" />
+                </motion.div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-foreground">Portfolio Assistant</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {isTyping ? "Thinking..." : "Ask me anything!"}
+                  </p>
+                </div>
+                {/* Easter eggs counter */}
+                <motion.div 
+                  className="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs text-primary-foreground flex items-center gap-1"
+                  animate={eggsFoundCount > 0 ? { scale: [1, 1.1, 1] } : {}}
+                  transition={{ duration: 0.3 }}
+                  key={eggsFoundCount}
+                >
+                  <Gift className="w-3 h-3" />
+                  <span>{eggsFoundCount}/5</span>
                 </motion.div>
               </div>
-              {/* Easter eggs counter */}
-              <motion.div 
-                className="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs text-primary-foreground flex items-center gap-1"
-                animate={eggsFoundCount > 0 ? { scale: [1, 1.1, 1] } : {}}
-                transition={{ duration: 0.3 }}
-                key={eggsFoundCount}
-              >
-                <Gift className="w-3 h-3" />
-                <span>{eggsFoundCount}/5 found!</span>
-              </motion.div>
-              {/* Expression indicator */}
-              <motion.div 
-                className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs text-muted-foreground"
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-              >
-                {isTyping ? "Thinking..." : expression === "happy" ? "Happy to help!" : "Ask me anything!"}
-              </motion.div>
             </div>
 
             {/* Messages area */}
-            <div className="h-[260px] max-sm:h-[calc(100%-220px)] overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <div className="h-[300px] max-sm:h-[calc(100%-180px)] overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               {messages.map((message, index) => (
                 <motion.div
                   key={message.id}
