@@ -433,11 +433,11 @@ export function Chatbot() {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed z-50 overflow-hidden bottom-24 right-6 w-[360px] sm:w-[400px] h-[500px] rounded-3xl max-sm:inset-0 max-sm:w-full max-sm:h-full max-sm:rounded-none max-sm:bottom-0 max-sm:right-0"
             style={{
-              background: "rgba(15, 23, 42, 0.97)",
+              background: "var(--chat-bg)",
               backdropFilter: "blur(20px)",
-              border: "1px solid rgba(139, 92, 246, 0.3)",
+              border: "1px solid var(--chat-border)",
               boxShadow:
-                "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(139, 92, 246, 0.2)",
+                "0 25px 50px -12px var(--chat-shadow), 0 0 40px var(--chat-shadow-accent)",
             }}
           >
             {/* Mobile close button */}

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X, Download } from "lucide-react";
+import { Menu, X, Download, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "next-themes";
 
 const navItems = [
   { label: "About", href: "#about" },
@@ -28,6 +29,12 @@ export function Navigation() {
   const [logoClicks, setLogoClicks] = useState(0);
   const [showSecretMenu, setShowSecretMenu] = useState(false);
   const [secretEggFound, setSecretEggFound] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,10 +106,10 @@ export function Navigation() {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="fixed left-0 top-0 h-full w-[280px] sm:w-[320px] z-[70] p-6 flex flex-col"
               style={{
-                background: "rgba(15, 23, 42, 0.98)",
+                background: "var(--panel-bg)",
                 backdropFilter: "blur(20px)",
-                borderRight: "1px solid rgba(139, 92, 246, 0.3)",
-                boxShadow: "10px 0 40px rgba(139, 92, 246, 0.2)",
+                borderRight: "1px solid var(--panel-border)",
+                boxShadow: "10px 0 40px var(--panel-shadow)",
               }}
             >
               {/* Header */}
@@ -266,22 +273,66 @@ export function Navigation() {
                 <Download className="w-4 h-4 group-hover:animate-bounce" />
                 Resume
               </a>
+              {mounted && (
+                <button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="p-2 rounded-full bg-secondary border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300"
+                  aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    {theme === "dark" ? (
+                      <motion.div
+                        key="sun"
+                        initial={{ rotate: -90, scale: 0 }}
+                        animate={{ rotate: 0, scale: 1 }}
+                        exit={{ rotate: 90, scale: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Sun className="w-4 h-4 text-muted-foreground" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="moon"
+                        initial={{ rotate: 90, scale: 0 }}
+                        animate={{ rotate: 0, scale: 1 }}
+                        exit={{ rotate: -90, scale: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Moon className="w-4 h-4 text-muted-foreground" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </button>
+              )}
             </div>
 
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
+            <div className="flex items-center gap-2 md:hidden">
+              {mounted && (
+                <button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="p-2 rounded-full bg-secondary border border-border hover:bg-primary/10 transition-colors"
+                  aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                >
+                  {theme === "dark" ? (
+                    <Sun className="w-5 h-5 text-muted-foreground" />
+                  ) : (
+                    <Moon className="w-5 h-5 text-muted-foreground" />
+                  )}
+                </button>
               )}
-            </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
 
