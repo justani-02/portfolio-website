@@ -16,11 +16,11 @@ const navItems = [
 
 // Fun facts for secret menu
 const funFacts = [
-  { icon: "🏃‍♀️", text: "5-time Marathon Champion" },
-  { icon: "📚", text: "Published in IEEE & Springer" },
-  { icon: "💜", text: "4 Years Youth Mentor" },
-  { icon: "🎮", text: "Snap Lens Studio Certified" },
-  { icon: "🌍", text: "Designed for Social Impact" },
+  { icon: "🎯", text: "Targeting CHI 2027" },
+  { icon: "✨", text: "Creative Technologist" },
+  { icon: "🏆", text: "Snapchat Opinion Leader" },
+  { icon: "🇮🇪", text: "Living in Dublin, Ireland" },
+  { icon: "🎓", text: "BTech in IT" },
 ];
 
 export function Navigation() {
@@ -98,69 +98,70 @@ export function Navigation() {
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
             />
             
-            {/* Secret Panel */}
+            {/* Secret Panel - slides from right */}
             <motion.div
-              initial={{ x: -300, opacity: 0 }}
+              initial={{ x: 340, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -300, opacity: 0 }}
+              exit={{ x: 340, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed left-0 top-0 h-full w-[280px] sm:w-[320px] z-[70] p-6 flex flex-col"
+              className="fixed right-0 top-0 h-full w-[300px] sm:w-[340px] z-[70] p-6 flex flex-col overflow-y-auto"
               style={{
                 background: "var(--panel-bg)",
-                backdropFilter: "blur(20px)",
-                borderRight: "1px solid var(--panel-border)",
-                boxShadow: "10px 0 40px var(--panel-shadow)",
+                backdropFilter: "blur(24px)",
+                borderLeft: "1px solid var(--panel-border)",
+                boxShadow: "-10px 0 40px var(--panel-shadow)",
               }}
             >
-              {/* Header */}
-              <div className="flex items-center justify-between mb-8">
-                <motion.h2
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-xl font-bold text-foreground"
-                >
-                  Secret Menu Unlocked!
-                </motion.h2>
+              {/* Close button top-right */}
+              <div className="flex items-center justify-end mb-2">
                 <button
                   onClick={() => setShowSecretMenu(false)}
-                  className="p-2 rounded-full hover:bg-secondary/50 transition-colors"
+                  className="p-2 rounded-full hover:bg-primary/10 border border-transparent hover:border-primary/30 transition-all duration-200"
+                  aria-label="Close secret menu"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5 text-muted-foreground" />
                 </button>
               </div>
 
-              {/* Fun Facts */}
-              <div className="space-y-4 flex-1">
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-sm text-muted-foreground mb-6"
-                >
-                  Fun facts about Ananya you might not know:
-                </motion.p>
-                
+              {/* Title */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mb-8 text-center"
+              >
+                <h2 className="text-xl font-bold text-foreground">
+                  Secret Menu Unlocked!
+                </h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Fun facts about Ananya
+                </p>
+              </motion.div>
+
+              {/* Fun Fact Cards */}
+              <div className="space-y-3 flex-1">
                 {funFacts.map((fact, index) => (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                    className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20"
+                    transition={{ delay: 0.3 + index * 0.1, type: "spring", stiffness: 260, damping: 20 }}
+                    className="group relative flex items-center gap-4 p-4 rounded-2xl border border-primary/20 bg-primary/5 backdrop-blur-sm hover:border-primary/40 hover:bg-primary/10 transition-all duration-300"
                   >
-                    <span className="text-2xl">{fact.icon}</span>
-                    <span className="text-sm font-medium text-foreground">{fact.text}</span>
+                    {/* Purple glow behind icon */}
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <span className="relative text-2xl shrink-0">{fact.icon}</span>
+                    <span className="relative text-sm font-medium text-foreground">{fact.text}</span>
                   </motion.div>
                 ))}
               </div>
 
-              {/* Footer */}
+              {/* Footer hint */}
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
-                className="text-xs text-muted-foreground text-center mt-4"
+                className="text-xs text-muted-foreground text-center mt-6 pt-4 border-t border-border"
               >
                 Click anywhere outside to close
               </motion.p>
