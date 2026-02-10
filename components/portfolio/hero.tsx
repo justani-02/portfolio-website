@@ -40,11 +40,11 @@ function Avatar() {
     if (avatarRef.current) {
       // Floating animation
       avatarRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.08 - 0.9;
-      
+
       // Calculate target rotation based on mouse position
       targetRotation.current.y = mouse.x * 0.5; // Horizontal rotation follows mouse X
       targetRotation.current.x = mouse.y * 0.15; // Slight vertical tilt follows mouse Y
-      
+
       // Smooth interpolation (lerp) for natural movement
       avatarRef.current.rotation.y = THREE.MathUtils.lerp(
         avatarRef.current.rotation.y,
@@ -109,7 +109,7 @@ export function Hero() {
   useEffect(() => {
     setIsVisible(true);
     setIsClient(true);
-    
+
     // Check if dance egg already found
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("portfolio-eggs-found");
@@ -124,22 +124,22 @@ export function Hero() {
 
   const handleAvatarClick = () => {
     if (danceEggFound) return;
-    
+
     const newCount = avatarClicks + 1;
     setAvatarClicks(newCount);
-    
+
     if (newCount >= 5) {
       // Trigger dance easter egg
       setShowDanceMode(true);
       setDanceEggFound(true);
-      
+
       // Dispatch custom event to notify chatbot
       window.dispatchEvent(
         new CustomEvent("easterEggFound", {
           detail: { eggId: 3, eggName: "DANCE TIME" },
         })
       );
-      
+
       // Hide effect after 5 seconds
       setTimeout(() => {
         setShowDanceMode(false);
@@ -154,11 +154,11 @@ export function Hero() {
         const rect = avatarContainerRef.current.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        
+
         // Normalize to -1 to 1 range
         const x = (e.clientX - centerX) / (window.innerWidth / 2);
         const y = (e.clientY - centerY) / (window.innerHeight / 2);
-        
+
         setMousePosition({ x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) });
       }
     };
@@ -187,7 +187,7 @@ export function Hero() {
             className="space-y-6 text-center lg:text-left"
           >
             <div className="space-y-2">
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.1 }}
@@ -195,7 +195,7 @@ export function Hero() {
               >
                 Welcome to my portfolio
               </motion.p>
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -206,7 +206,7 @@ export function Hero() {
                   Chandraker
                 </span>
               </motion.h1>
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.3 }}
@@ -216,7 +216,7 @@ export function Hero() {
               </motion.p>
             </div>
 
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -229,7 +229,7 @@ export function Hero() {
               impact.
             </motion.p>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.5 }}
@@ -264,33 +264,61 @@ export function Hero() {
             </motion.div>
 
             {/* Social Links */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.6 }}
               className="flex items-center gap-4 justify-center lg:justify-start pt-4 relative z-20"
             >
-              {[
-                { href: "https://www.linkedin.com/in/ananya-chandraker/", Icon: Linkedin, label: "LinkedIn" },
-                { href: "https://github.com/justani-02", Icon: Github, label: "GitHub" },
-                { href: "mailto:ananyachandraker02@gmail.com", Icon: Mail, label: "Email" },
-              ].map((social, index) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target={social.label !== "Email" ? "_blank" : undefined}
-                  rel={social.label !== "Email" ? "noopener noreferrer" : undefined}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={isVisible ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
-                  aria-label={social.label}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.7 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <a
+                  href="https://www.linkedin.com/in/ananya-chandraker/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
+                  aria-label="LinkedIn"
                 >
-                  <social.Icon className="w-5 h-5 text-muted-foreground pointer-events-none" />
-                </motion.a>
-              ))}
+                  <Linkedin className="w-5 h-5 text-muted-foreground" />
+                </a>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.8 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <a
+                  href="https://github.com/justani-02"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
+                  aria-label="GitHub"
+                >
+                  <Github className="w-5 h-5 text-muted-foreground" />
+                </a>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.9 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <a
+                  href="mailto:ananyachandraker02@gmail.com"
+                  className="block p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
+                  aria-label="Email"
+                >
+                  <Mail className="w-5 h-5 text-muted-foreground" />
+                </a>
+              </motion.div>
             </motion.div>
           </motion.div>
 
@@ -327,28 +355,26 @@ export function Hero() {
                 </motion.p>
               </motion.div>
             )}
-            
-            <div 
+
+            <div
               ref={avatarContainerRef}
               data-avatar-container
               onClick={handleAvatarClick}
-              className={`relative w-full max-w-[400px] h-[500px] lg:max-w-[450px] lg:h-[580px] mx-auto ${
-                !danceEggFound ? "cursor-pointer" : ""
-              }`}
+              className={`relative w-full max-w-[400px] h-[500px] lg:max-w-[450px] lg:h-[580px] mx-auto ${!danceEggFound ? "cursor-pointer" : ""
+                }`}
               title={danceEggFound ? "Dance Time unlocked!" : `Click me! (${avatarClicks}/5)`}
             >
               {/* Glow effect behind avatar */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={isVisible ? { opacity: 1 } : {}}
                 transition={{ duration: 1, delay: 0.5 }}
-                className={`absolute inset-0 bg-gradient-to-t from-primary/20 via-primary/5 to-transparent rounded-full blur-3xl ${
-                  showDanceMode ? "animate-pulse" : ""
-                }`}
+                className={`absolute inset-0 bg-gradient-to-t from-primary/20 via-primary/5 to-transparent rounded-full blur-3xl ${showDanceMode ? "animate-pulse" : ""
+                  }`}
               />
-              
+
               {/* Interaction hint */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 1 }}
@@ -357,16 +383,16 @@ export function Hero() {
                 <span className="inline-block w-4 h-4 border border-muted-foreground/40 rounded-sm" />
                 <span>Drag to rotate</span>
               </motion.div>
-              
+
               {/* 3D Avatar with React Three Fiber */}
-              <motion.div 
+              <motion.div
                 className="relative z-10 w-full h-full"
-                animate={showDanceMode ? { 
+                animate={showDanceMode ? {
                   rotate: [0, 10, -10, 10, 0],
                   scale: [1, 1.05, 1, 1.05, 1]
                 } : {}}
-                transition={showDanceMode ? { 
-                  duration: 0.5, 
+                transition={showDanceMode ? {
+                  duration: 0.5,
                   repeat: Infinity,
                   ease: "easeInOut"
                 } : {}}
@@ -378,7 +404,7 @@ export function Hero() {
         </div>
 
         {/* Scroll indicator */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 1.2 }}
