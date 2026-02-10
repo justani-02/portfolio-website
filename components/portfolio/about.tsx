@@ -259,6 +259,22 @@ export function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   const [activeSkill, setActiveSkill] = useState<number | null>(null);
+  const [clickedSkills, setClickedSkills] = useState<Set<number>>(new Set());
+  const [skillMasterFound, setSkillMasterFound] = useState(false);
+  const [showSkillMaster, setShowSkillMaster] = useState(false);
+
+  // Check if already found from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("portfolio-eggs-found");
+      if (saved) {
+        const found = new Set(JSON.parse(saved));
+        if (found.has(3)) {
+          setSkillMasterFound(true);
+        }
+      }
+    }
+  }, []);
 
   const handleSkillHover = useCallback((index: number) => {
     setActiveSkill(index);
@@ -270,16 +286,103 @@ export function About() {
 
   const handleSkillClick = useCallback((index: number) => {
     setActiveSkill(prev => prev === index ? null : index);
-  }, []);
+
+    if (skillMasterFound) return;
+
+    setClickedSkills(prev => {
+      const updated = new Set(prev);
+      updated.add(index);
+
+      // Check if all 6 skills clicked
+      if (updated.size >= 6) {
+        setSkillMasterFound(true);
+        setShowSkillMaster(true);
+
+        // Dispatch custom event to notify chatbot
+        window.dispatchEvent(
+          new CustomEvent("easterEggFound", {
+            detail: { eggId: 3, eggName: "SKILL MASTER" },
+          })
+        );
+
+        // Hide effect after 5 seconds
+        setTimeout(() => {
+          setShowSkillMaster(false);
+        }, 5000);
+      }
+
+      return updated;
+    });
+  }, [skillMasterFound]);
 
   return (
-    <section
-      ref={sectionRef}
-      id="about"
-      className="py-20 md:py-32 relative overflow-hidden"
-    >
-      {/* Background decorations */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+    <>
+      {/* Skill Master achievement overlay */}
+      <AnimatePresence>
+        {showSkillMaster && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 pointer-events-none z-40 flex items-center justify-center"
+          >
+            {/* Sparkles effect */}
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{
+                  x: typeof window !== "undefined" ? window.innerWidth / 2 : 500,
+                  y: typeof window !== "undefined" ? window.innerHeight / 2 : 400,
+                  scale: 0,
+                  opacity: 1,
+                }}
+                animate={{
+                  x: (typeof window !== "undefined" ? window.innerWidth / 2 : 500) + (Math.random() - 0.5) * 500,
+                  y: (typeof window !== "undefined" ? window.innerHeight / 2 : 400) + (Math.random() - 0.5) * 500,
+                  scale: [0, 1.5, 0],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{ duration: 1.5, delay: Math.random() * 0.5 }}
+                className="absolute text-2xl"
+              >
+                {"*"}
+              </motion.div>
+            ))}
+            {/* Badge */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+              className="flex flex-col items-center gap-3 p-8 rounded-3xl"
+              style={{
+                background: "rgba(15, 23, 42, 0.95)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(139, 92, 246, 0.5)",
+                boxShadow: "0 0 60px rgba(139, 92, 246, 0.3)",
+              }}
+            >
+              <motion.p
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="text-4xl"
+              >
+                {"*"}
+              </motion.p>
+              <p className="text-xl font-bold text-foreground">Skill Master!</p>
+              <p className="text-sm text-muted-foreground">You explored all skills!</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <section
+        ref={sectionRef}
+        id="about"
+        className="py-20 md:py-32 relative overflow-hidden"
+      >
+        {/* Background decorations */}
+        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -388,6 +491,7 @@ export function About() {
           </motion.div>
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

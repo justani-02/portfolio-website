@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, X, Sparkles, Gift, HelpCircle, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Easter eggs data - 4 simple click-based eggs
+// Easter eggs data - 3 simple click-based eggs
 const EASTER_EGGS = [
   { 
     id: 1, 
@@ -24,12 +24,6 @@ const EASTER_EGGS = [
     name: "SKILL MASTER", 
     hint: "Check out my skills in the About section... try clicking each one!",
     funHint: "There are 6 skill cards in the About section. Click ALL of them to become a Skill Master!"
-  },
-  { 
-    id: 4, 
-    name: "SOCIAL BUTTERFLY", 
-    hint: "Want to connect? Try clicking all my social media icons!",
-    funHint: "In the hero section, there are 3 social icons (LinkedIn, GitHub, Email). Click all 3!"
   },
 ];
 
@@ -50,7 +44,7 @@ export function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hey there! I'm Ananya's portfolio buddy. I know all about her amazing work in AR/VR, healthcare tech, and UX design. Also... there are 4 hidden easter eggs in this portfolio. Want to find them all?",
+      text: "Hey there! I'm Ananya's portfolio buddy. I know all about her amazing work in AR/VR, healthcare tech, and UX design. Also... there are 3 hidden easter eggs in this portfolio. Want to find them all?",
       isUser: false,
       timestamp: new Date(),
     },
@@ -102,10 +96,10 @@ export function Chatbot() {
         setEggsFound((prev) => new Set([...prev, eggId]));
         // Auto-open chat and announce
         setIsOpen(true);
-        const remaining = 4 - eggsFound.size - 1;
+        const remaining = 3 - eggsFound.size - 1;
         const newMessage: Message = {
           id: Date.now(),
-          text: `Amazing! You found ${eggName}! ${remaining > 0 ? `${remaining} more to go! Keep hunting!` : "That's all 4! You're a Master Explorer!"}`,
+          text: `Amazing! You found ${eggName}! ${remaining > 0 ? `${remaining} more to go! Keep hunting!` : "That's all 3! You're a Master Explorer!"}`,
           isUser: false,
           timestamp: new Date(),
         };
@@ -126,7 +120,6 @@ export function Chatbot() {
   }, [messages]);
 
   const getUnfoundHint = useCallback(() => {
-    // Get hints for eggs not yet found
     const unfoundEggs = EASTER_EGGS.filter(egg => !eggsFound.has(egg.id));
     if (unfoundEggs.length === 0) {
       return "You've found them all! You're amazing!";
@@ -152,17 +145,17 @@ export function Chatbot() {
     
     // Help requests
     if (lowerMessage.match(/^help$|how do i|what can/)) {
-      return "Find 4 hidden surprises in this portfolio! Want a hint? Just ask! You can also ask me about Ananya's projects, skills, experience, or publications.";
+      return "Find 3 hidden surprises in this portfolio! Want a hint? Just ask! You can also ask me about Ananya's projects, skills, experience, or publications.";
     }
     
     // Easter eggs inquiry
     if (lowerMessage.match(/easter|eggs?|hidden|secret|hunt|surprise/)) {
       const found = eggsFound.size;
-      if (found === 4) {
+      if (found === 3) {
         return "WOW! You found them all! Master Explorer! Want to know more about Ananya's work?";
       }
       setConversationState({ awaitingHintConfirmation: true, lastTopic: "easter" });
-      return `There are 4 hidden gems in this portfolio! You've found ${found}/4 so far. Want a hint?`;
+      return `There are 3 hidden gems in this portfolio! You've found ${found}/3 so far. Want a hint?`;
     }
     
     // Hint requests
@@ -174,13 +167,13 @@ export function Chatbot() {
     if (lowerMessage.match(/progress|how many|found|status|score/)) {
       const found = eggsFound.size;
       if (found === 0) {
-        return "You haven't found any easter eggs yet! There are 4 hidden around the portfolio. Want a hint to get started?";
+        return "You haven't found any easter eggs yet! There are 3 hidden around the portfolio. Want a hint to get started?";
       }
-      if (found === 4) {
-        return "You found ALL 4 easter eggs! Master Explorer status achieved! What else can I help you with?";
+      if (found === 3) {
+        return "You found ALL 3 easter eggs! Master Explorer status achieved! What else can I help you with?";
       }
       const foundNames = EASTER_EGGS.filter(e => eggsFound.has(e.id)).map(e => e.name).join(", ");
-      return `You've found ${found}/4 easter eggs! (${foundNames}) Keep exploring!`;
+      return `You've found ${found}/3 easter eggs! (${foundNames}) Keep exploring!`;
     }
     
     // Greetings
@@ -247,7 +240,7 @@ export function Chatbot() {
     const defaultResponses = [
       "Hmm, not sure about that one! But hey, have you checked out the Projects section? Some really cool AR/VR stuff there!",
       "I might not have the answer to that, but I DO know there are easter eggs hidden around... want a hint?",
-      "Good question! I specialize in Ananya's portfolio though. Ask about her skills, projects, or try to find the 4 hidden secrets!",
+      "Good question! I specialize in Ananya's portfolio though. Ask about her skills, projects, or try to find the 3 hidden secrets!",
     ];
     
     return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
@@ -268,7 +261,6 @@ export function Chatbot() {
     setInputValue("");
     setIsTyping(true);
     
-    // Simulate typing delay with variable timing
     const typingDelay = 800 + Math.random() * 700;
     setTimeout(() => {
       const botResponse: Message = {
@@ -292,12 +284,12 @@ export function Chatbot() {
       case "progress":
         const found = eggsFound.size;
         if (found === 0) {
-          responseText = "You haven't found any easter eggs yet! There are 4 hidden around the portfolio. Want a hint?";
-        } else if (found === 4) {
-          responseText = "You found ALL 4 easter eggs! Master Explorer!";
+          responseText = "You haven't found any easter eggs yet! There are 3 hidden around the portfolio. Want a hint?";
+        } else if (found === 3) {
+          responseText = "You found ALL 3 easter eggs! Master Explorer!";
         } else {
           const foundNames = EASTER_EGGS.filter(e => eggsFound.has(e.id)).map(e => e.name).join(", ");
-          responseText = `You've found ${found}/4! (${foundNames})`;
+          responseText = `You've found ${found}/3! (${foundNames})`;
         }
         break;
       default:
@@ -367,8 +359,7 @@ export function Chatbot() {
               className="relative"
             >
               <Sparkles className="w-6 h-6 text-white" />
-              {/* Notification dot for eggs */}
-              {eggsFoundCount > 0 && eggsFoundCount < 4 && (
+              {eggsFoundCount > 0 && eggsFoundCount < 3 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-[10px] font-bold rounded-full flex items-center justify-center text-white">
                   {eggsFoundCount}
                 </span>
@@ -376,7 +367,6 @@ export function Chatbot() {
             </motion.div>
           )}
         </AnimatePresence>
-        {/* Pulse ring when closed */}
         {!isOpen && (
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-primary"
@@ -436,7 +426,6 @@ export function Chatbot() {
                     {isTyping ? "Thinking..." : "Ask me anything!"}
                   </p>
                 </div>
-                {/* Easter eggs counter with progress bar */}
                 <motion.div 
                   className="flex flex-col items-end gap-1"
                   animate={eggsFoundCount > 0 ? { scale: [1, 1.1, 1] } : {}}
@@ -445,14 +434,13 @@ export function Chatbot() {
                 >
                   <div className="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-xs text-primary-foreground flex items-center gap-1">
                     <Gift className="w-3 h-3" />
-                    <span>Found: {eggsFoundCount}/4</span>
+                    <span>Found: {eggsFoundCount}/3</span>
                   </div>
-                  {/* Mini progress bar */}
                   <div className="w-20 h-1.5 bg-secondary/50 rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-gradient-to-r from-primary to-accent"
                       initial={{ width: 0 }}
-                      animate={{ width: `${(eggsFoundCount / 4) * 100}%` }}
+                      animate={{ width: `${(eggsFoundCount / 3) * 100}%` }}
                       transition={{ duration: 0.5 }}
                     />
                   </div>

@@ -1,34 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Heart } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-
-// Running shoe SVG icon
-function RunningShoeIcon({ className }: { className?: string }) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <path d="M2 19h18a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1l-2-4h-3l-1 2H8l-2-4H4l-2 4v5a2 2 0 0 0 2 2z" />
-      <path d="M6 15h1" />
-      <path d="M10 15h1" />
-      <path d="M14 15h1" />
-    </svg>
-  );
-}
+import { useState, useEffect, useRef } from "react";
+import { Heart, Trophy } from "lucide-react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 
 export function Footer() {
-  const [shoeClicks, setShoeClicks] = useState(0);
-  const [showRunnerMode, setShowRunnerMode] = useState(false);
+  const [showExplorerBadge, setShowExplorerBadge] = useState(false);
   const [eggFound, setEggFound] = useState(false);
+  const footerRef = useRef<HTMLElement>(null);
+  const isInView = useInView(footerRef, { once: true, amount: 0.5 });
 
   // Check if already found from localStorage
   useEffect(() => {
@@ -36,110 +16,99 @@ export function Footer() {
       const saved = localStorage.getItem("portfolio-eggs-found");
       if (saved) {
         const found = new Set(JSON.parse(saved));
-        if (found.has(1)) {
+        if (found.has(2)) {
           setEggFound(true);
         }
       }
     }
   }, []);
 
-  const handleShoeClick = () => {
-    if (eggFound) return;
-    
-    const newCount = shoeClicks + 1;
-    setShoeClicks(newCount);
-    
-    if (newCount >= 3) {
-      // Trigger easter egg
-      setShowRunnerMode(true);
+  // Trigger explorer egg when footer comes into view
+  useEffect(() => {
+    if (isInView && !eggFound) {
+      setShowExplorerBadge(true);
       setEggFound(true);
-      
+
       // Dispatch custom event to notify chatbot
       window.dispatchEvent(
         new CustomEvent("easterEggFound", {
-          detail: { eggId: 1, eggName: "RUNNER MODE" },
+          detail: { eggId: 2, eggName: "EXPLORER" },
         })
       );
-      
-      // Speed up page animations
-      document.documentElement.style.setProperty("--animation-speed", "0.5");
-      
-      // Hide effect after 5 seconds
+
+      // Hide badge after 5 seconds
       setTimeout(() => {
-        setShowRunnerMode(false);
-        document.documentElement.style.removeProperty("--animation-speed");
+        setShowExplorerBadge(false);
       }, 5000);
     }
-  };
+  }, [isInView, eggFound]);
 
   return (
     <>
-      {/* Runner mode overlay */}
+      {/* Explorer achievement overlay */}
       <AnimatePresence>
-        {showRunnerMode && (
+        {showExplorerBadge && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 pointer-events-none z-40 flex items-center justify-center"
           >
+            {/* Confetti */}
+            {[...Array(30)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{
+                  x: typeof window !== "undefined" ? window.innerWidth / 2 : 500,
+                  y: typeof window !== "undefined" ? window.innerHeight / 2 : 400,
+                  scale: 0,
+                }}
+                animate={{
+                  x: (typeof window !== "undefined" ? window.innerWidth / 2 : 500) + (Math.random() - 0.5) * 600,
+                  y: (typeof window !== "undefined" ? window.innerHeight / 2 : 400) + (Math.random() - 0.5) * 600,
+                  scale: [0, 1, 0.5],
+                  rotate: Math.random() * 720,
+                }}
+                transition={{ duration: 1.5 + Math.random(), delay: Math.random() * 0.3 }}
+                className="absolute w-3 h-3 rounded-sm"
+                style={{
+                  backgroundColor: ["#8b5cf6", "#ec4899", "#06b6d4", "#22c55e", "#f59e0b"][Math.floor(Math.random() * 5)]
+                }}
+              />
+            ))}
+            {/* Badge */}
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
-              exit={{ scale: 0, rotate: 180 }}
-              className="text-6xl sm:text-8xl"
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+              className="flex flex-col items-center gap-3 p-8 rounded-3xl"
+              style={{
+                background: "rgba(15, 23, 42, 0.95)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(139, 92, 246, 0.5)",
+                boxShadow: "0 0 60px rgba(139, 92, 246, 0.3)",
+              }}
             >
-              🏃‍♀️
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+              >
+                <Trophy className="w-12 h-12 text-yellow-400" />
+              </motion.div>
+              <p className="text-xl font-bold text-foreground">Explorer Achievement!</p>
+              <p className="text-sm text-muted-foreground">You scrolled to the very bottom!</p>
             </motion.div>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="absolute bottom-1/3 text-2xl font-bold text-primary"
-            >
-              Marathon Champion!
-            </motion.p>
-            {/* Shoe trail effect */}
-            <div className="absolute inset-0 overflow-hidden">
-              {[...Array(10)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ x: -100, y: Math.random() * window.innerHeight }}
-                  animate={{ x: window.innerWidth + 100 }}
-                  transition={{ duration: 1 + Math.random(), delay: i * 0.2, repeat: 2 }}
-                  className="absolute text-3xl"
-                  style={{ top: `${10 + i * 8}%` }}
-                >
-                  👟
-                </motion.div>
-              ))}
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <footer className="py-12 border-t border-border">
+      <footer ref={footerRef} className="py-12 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <span>&copy; 2026 Ananya Chandraker. Designed with</span>
             <Heart className="w-4 h-4 text-primary fill-primary" />
             <span>for human-centered experiences.</span>
-            
-            {/* Running shoe easter egg trigger */}
-            <motion.button
-              onClick={handleShoeClick}
-              className={`ml-2 p-1 rounded-full transition-all duration-300 ${
-                eggFound 
-                  ? "text-primary cursor-default" 
-                  : "text-muted-foreground/50 hover:text-primary hover:bg-primary/10 cursor-pointer"
-              }`}
-              whileHover={!eggFound ? { scale: 1.2 } : {}}
-              whileTap={!eggFound ? { scale: 0.9 } : {}}
-              aria-label="Running shoe"
-              title={eggFound ? "Runner Mode unlocked!" : `Click me! (${shoeClicks}/3)`}
-            >
-              <RunningShoeIcon className="w-4 h-4" />
-            </motion.button>
           </div>
         </div>
       </footer>
