@@ -1,83 +1,104 @@
----
+# Ananya Chandraker
 
-## 🎨 Design Philosophy
+**MSc HCI Student | AR/VR Developer | UX Designer**
 
-This portfolio embodies principles of **Human-Centered Design**:
+A portfolio showcasing research, development projects, and design work at the intersection of human-computer interaction, immersive technology, and social impact.
 
-- 🎭 **Immersive**: 3D elements create engaging experiences
-- ♿ **Accessible**: Semantic HTML, keyboard navigation, ARIA labels
-- 📱 **Responsive**: Seamless experience across all devices
-- ⚡ **Performant**: Optimized assets, lazy loading, code splitting
-- 🎨 **Aesthetic**: Glassmorphism with subtle purple accents
-- 🎮 **Playful**: Easter eggs reward curious exploration
+[Live Portfolio](https://v0-portfolio-website-two-pi-17.vercel.app/)
+
+check) · [LinkedIn](https://linkedin.com/in/ananya-chandraker/) · [Email](mailto:ananyachandraker02@gmail.com)
 
 ---
 
-## 🌟 Highlights
+## About
 
-### Featured Research
-- 🏆 **IEEE iMETA2025** - MemFusion-Tformer (15% acceptance rate)
-- 📘 **Springer RASESIA 2024** - Mobile Health Integration
-- 🎯 **CHI 2027 Target** - Adaptive MR Interfaces
-
-### Creative Projects
-- 🥽 Live Snapchat AR Lens with [tutorial guide](https://silk-land-632.notion.site/Lens-Studio-940bc67d8aa1465ab9963ef09a5c8f21)
-- 🎨 3-part digital art series on social awareness
-- 💻 Open-source healthcare management system
+Currently pursuing Human-Computer Interaction at University College Dublin, with focus on AR/VR development, user research, and adaptive interfaces. Published researcher with work accepted at IEEE iMETA2025 and Springer RASESIA 2024.
 
 ---
 
-## 📬 Contact
+## Tech Stack
+
+**Frontend:** React, TypeScript, Tailwind CSS  
+**3D Graphics:** Three.js, React Three Fiber  
+**Animation:** Framer Motion  
+**Deployment:** Vercel  
+
+---
+
+## Featured Projects
+
+**Adaptive and Invisible Interfaces in Mixed Reality**  
+Novel MR system reducing cognitive friction through physiological adaptation. Three-pillar framework combining spatial representation, embodied inputs, and emotional awareness. Target: ACM CHI 2027.
+
+**MemFusion-Tformer**  
+Memory-driven transformer architecture for urban traffic prediction. Developed for AMRUT Government Project. Published at IEEE iMETA2025.
+
+**Mobile Health Apps and Network Integration**  
+Research on integrating mobile health applications with network systems. Published in Springer RASESIA 2024.
+
+**Lens Studio Beginners' Guide**  
+Comprehensive AR tutorial repository with live Snapchat lens and documentation.
+
+---
+
+## Publications
+
+- **MemFusion-Tformer: Memory-Driven Cross-Attention for Dynamic Congestion Prediction in Urban Networks**  
+  IEEE iMETA2025, Dubrovnik, Croatia
+
+- **Mobile Health Apps and Network Integration: Transforming Healthcare Delivery**  
+  Springer RASESIA 2024, NIT Kurukshetra, India
+
+---
+
+## Installation
+```bash
+# Clone repository
+git clone https://github.com/justani02/portfolio.git
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+
+---
+
+## Features
+
+- Interactive 3D avatar using Ready Player Me
+- Dynamic project filtering by category
+- Responsive design with glassmorphism effects
+- Smooth scroll animations
+- Hidden easter eggs for engagement
+
+---
+
+## Structure
+```
+src/
+├── components/
+│   ├── Hero.tsx
+│   ├── About.tsx
+│   ├── Projects.tsx
+│   ├── Experience.tsx
+│   ├── Publications.tsx
+│   └── Contact.tsx
+├── App.tsx
+└── main.tsx
+```
+
+---
+
+## Contact
 
 **Ananya Chandraker**  
-MSc Human-Computer Interaction | AR/VR Developer | UX Designer
-
-- 📧 Email: [ananyachandraker02@gmail.com](mailto:ananyachandraker02@gmail.com)
-- 💼 LinkedIn: [linkedin.com/in/ananyachandraker](https://linkedin.com/in/ananya-chandraker/)
-- 🐙 GitHub: [github.com/justani02](https://github.com/justani-02)
-- 🌐 Portfolio: [your-portfolio-url.com](https://v0-portfolio-website-two-pi-17.vercel.app/)
-check)
+ananyachandraker02@gmail.com  
+Dublin, Ireland
 
 ---
 
-## 📜 License
+## License
 
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-## 🙏 Acknowledgments
-
-- 🎓 University College Dublin for HCI education
-- 🏢 MNIT Jaipur for research opportunities
-- 💜 Make A Difference for 4 years of meaningful mentorship
-- 🥽 Snapchat for Opinion Leader platform
-- 🎨 Ready Player Me for 3D avatar technology
-- ✨ V0 by Vercel for rapid UI prototyping
-
----
-
-## 🎯 Future Enhancements
-
-- [ ] Blog section with HCI insights
-- [ ] Case study pages for top projects
-- [ ] Video introduction
-- [ ] Testimonials carousel
-- [ ] Dark/Light theme toggle
-- [ ] Multi-language support
-- [ ] Advanced analytics dashboard
-
----
-
-<div align="center">
-
-### ⭐ Star this repo if you found it interesting!
-
-**Built with 💜 by Ananya Chandraker**
-
-*Creating technology that serves humanity*
-
-![Visitors](https://visitor-badge.laobi.icu/badge?page_id=justani02.portfolio)
-![Stars](https://img.shields.io/github/stars/justani02/portfolio?style=social)
-
-</div>
+MIT License - Open source and available for reference.
