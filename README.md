@@ -4,9 +4,7 @@
 
 A portfolio showcasing research, development projects, and design work at the intersection of human-computer interaction, immersive technology, and social impact.
 
-[Live Portfolio](https://v0-portfolio-website-two-pi-17.vercel.app/)
-
-check) · [LinkedIn](https://linkedin.com/in/ananya-chandraker/) · [Email](mailto:ananyachandraker02@gmail.com)
+[Live Portfolio](https://v0-portfolio-website-two-pi-17.vercel.app/) · [LinkedIn](https://linkedin.com/in/ananya-chandraker/) · [Email](mailto:ananyachandraker02@gmail.com)
 
 ---
 
