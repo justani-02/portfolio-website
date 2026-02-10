@@ -270,27 +270,46 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.6 }}
               className="flex items-center gap-4 justify-center lg:justify-start pt-4 relative z-20"
             >
-              {[
-                { href: "https://www.linkedin.com/in/ananya-chandraker/", Icon: Linkedin, label: "LinkedIn" },
-                { href: "https://github.com/justani-02", Icon: Github, label: "GitHub" },
-                { href: "mailto:ananyachandraker02@gmail.com", Icon: Mail, label: "Email" },
-              ].map((social, index) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target={social.label !== "Email" ? "_blank" : undefined}
-                  rel={social.label !== "Email" ? "noopener noreferrer" : undefined}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={isVisible ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
-                  aria-label={social.label}
-                >
-                  <social.Icon className="w-5 h-5 text-muted-foreground pointer-events-none" />
-                </motion.a>
-              ))}
+              <motion.a
+                href="https://linkedin.com/in/ananyachandraker"
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.7 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="w-5 h-5 text-muted-foreground" />
+              </motion.a>
+              <motion.a
+                href="https://github.com/justani-02"
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.8 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
+                aria-label="GitHub"
+              >
+                <Github className="w-5 h-5 text-muted-foreground" />
+              </motion.a>
+              <motion.a
+                href="mailto:ananyachandraker02@gmail.com"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={isVisible ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.9 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="p-3 rounded-full bg-card border border-border hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 relative z-20"
+                aria-label="Email"
+              >
+                <Mail className="w-5 h-5 text-muted-foreground" />
+              </motion.a>
             </motion.div>
           </motion.div>
 
