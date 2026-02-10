@@ -10,7 +10,7 @@ A portfolio showcasing research, development projects, and design work at the in
 
 ## About
 
-Currently pursuing Human-Computer Interaction at University College Dublin, with focus on AR/VR development, user research, and adaptive interfaces. Published researcher with work accepted at IEEE iMETA2025 and Springer RASESIA 2024.
+Currently pursuing Human-Computer Interaction at University College Dublin, with focus on AR/VR development, user research, and adaptive interfaces. Published researcher +  accepted work
 
 ---
 
