@@ -186,7 +186,39 @@ const projects = [
     badge: "UX Research",
     gradient: "from-orange-500/20 via-amber-500/15 to-yellow-500/20",
     borderColor: "hover:border-orange-500/50",
-    size: "small",
+    size: "large",
+    hasCarousel: true,
+    carouselImages: [
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2013%20Pro-9in5HAqKgEg4wYI55cWOuHRT3JhS1d.png",
+        caption: "App overview: Community feed, onboarding splash screen, and AI-powered ingredient-based recipe generation",
+        alt: "Three iPhone mockups showing FoodApp Community, onboarding, and Ingredients screens",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/homescreen-5D0lfRSo6f44yONhgxyaQFInZzhKNV.png",
+        caption: "Home screen with personalized recommendations, cultural calendar, and quick meal categories",
+        alt: "FoodApp home screen showing recipe recommendations, search bar, and meal categories",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2022-8kqwzUNJGXD7jBClF4IL3GxrwdTMYJ.png",
+        caption: "Recipe detail view with nutritional facts, customizable portions, and ingredient checklist",
+        alt: "Recipe detail screen for Chicken Stir-fry showing nutrition info and ingredients",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2012-dCbVtzdGkLwnuel6GoxFwtgjJ3fjKB.png",
+        caption: "Step-by-step cooking mode with built-in timer for guided meal preparation",
+        alt: "Cooking Mode screen showing step 5 of 8 with a timer countdown",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/reward-vTQ1iiRJoJFs7EcPqLF3yigZlO9zQ5.png",
+        caption: "Gamification system with points, daily bonuses, and weekly cooking challenges",
+        alt: "Rewards and Points screen with 450 points, daily bonus tracker, and weekly tasks",
+      },
+    ],
+    demo: {
+      type: "gallery",
+      label: "View Prototype Gallery",
+    },
   },
   {
     id: 6,
