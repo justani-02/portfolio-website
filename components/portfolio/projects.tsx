@@ -11,6 +11,7 @@ const filterCategories = [
   { id: "research", label: "Research", color: "bg-violet-500" },
   { id: "ar-vr", label: "AR/VR", color: "bg-pink-500" },
   { id: "development", label: "Development", color: "bg-emerald-500" },
+  { id: "healthtech", label: "HealthTech", color: "bg-teal-500" },
   { id: "design", label: "Design", color: "bg-orange-500" },
   { id: "social-impact", label: "Social Impact", color: "bg-amber-500" },
 ];
@@ -157,6 +158,34 @@ const projects = [
     status: "Ongoing Research",
     gradient: "from-purple-500/20 to-indigo-500/20",
     borderColor: "hover:border-purple-500/50",
+    size: "small",
+  },
+  {
+    id: 7,
+    title: "Medical Passport - Dialysis Travel Solution",
+    category: "HealthTech | Healthcare Innovation",
+    filters: ["healthtech", "development"],
+    description:
+      "Digital travel passport for dialysis patients with hospital-verified records accessible via QR code. Reduces weeks of coordination to a simple scan. Built at AdvanceHealth hackathon (Feb 27-28, 2026, Trinity Business School Dublin).",
+    tags: ["React", "TypeScript", "Python", "Supabase", "FHIR", "HL7", "Figma"],
+    status: "Completed - February 2026",
+    badge: "HealthTech Hackathon",
+    gradient: "from-teal-500/20 via-cyan-500/15 to-blue-500/20",
+    borderColor: "hover:border-teal-500/50",
+    size: "medium",
+  },
+  {
+    id: 8,
+    title: "FoodApp - Student Meal Planning",
+    category: "UX Research | Prototyping",
+    filters: ["design"],
+    description:
+      "iOS meal planning app prototype for UCD students. 12 screens with AI menu assistant, weekly planner, pantry tracking, and gamification. Research-driven design from 37-student survey addressing decision fatigue (40.5%), time constraints (48.6%), budget consciousness (83.7%).",
+    tags: ["Figma", "JSON Specification", "iOS Design System"],
+    status: "Completed - User Testing Phase",
+    badge: "UX Research",
+    gradient: "from-orange-500/20 via-amber-500/15 to-yellow-500/20",
+    borderColor: "hover:border-orange-500/50",
     size: "small",
   },
   {
