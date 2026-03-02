@@ -11,6 +11,7 @@ const filterCategories = [
   { id: "research", label: "Research", color: "bg-violet-500" },
   { id: "ar-vr", label: "AR/VR", color: "bg-pink-500" },
   { id: "development", label: "Development", color: "bg-emerald-500" },
+  { id: "healthtech", label: "HealthTech", color: "bg-teal-500" },
   { id: "design", label: "Design", color: "bg-orange-500" },
   { id: "social-impact", label: "Social Impact", color: "bg-amber-500" },
 ];
@@ -158,6 +159,73 @@ const projects = [
     gradient: "from-purple-500/20 to-indigo-500/20",
     borderColor: "hover:border-purple-500/50",
     size: "small",
+  },
+  {
+    id: 7,
+    title: "Medical Passport - Dialysis Travel Solution",
+    category: "HealthTech | Healthcare Innovation",
+    filters: ["healthtech", "development"],
+    description:
+      "Digital travel passport for dialysis patients with hospital-verified records accessible via QR code. Reduces weeks of coordination to a simple scan. Built at AdvanceHealth hackathon (Feb 27-28, 2026, Trinity Business School Dublin).",
+    tags: ["React", "TypeScript", "Python", "Supabase", "FHIR", "HL7", "Figma"],
+    status: "Completed - February 2026",
+    badge: "HealthTech Hackathon",
+    gradient: "from-teal-500/20 via-cyan-500/15 to-blue-500/20",
+    borderColor: "hover:border-teal-500/50",
+    size: "medium",
+    github: "https://github.com/justani-02/Dialysis-Medical-Passport-App",
+    links: [
+      {
+        label: "Figma Prototype",
+        url: "https://www.figma.com/proto/4WMAuw2kvibVz1HA1fqgZ9/Medical-Passport-Prototype?page-id=0%3A1&node-id=4-1430&viewport=1455%2C1351%2C0.65&t=OssnaNmvhdl6LtkS-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=4%3A1430",
+      },
+    ],
+  },
+  {
+    id: 8,
+    title: "FoodApp - Student Meal Planning",
+    category: "UX Research | Prototyping",
+    filters: ["design"],
+    description:
+      "iOS meal planning app prototype for UCD students. 12 screens with AI menu assistant, weekly planner, pantry tracking, and gamification. Research-driven design from 37-student survey addressing decision fatigue (40.5%), time constraints (48.6%), budget consciousness (83.7%).",
+    tags: ["Figma", "JSON Specification", "iOS Design System"],
+    status: "Completed - User Testing Phase",
+    badge: "UX Research",
+    gradient: "from-orange-500/20 via-amber-500/15 to-yellow-500/20",
+    borderColor: "hover:border-orange-500/50",
+    size: "large",
+    hasCarousel: true,
+    carouselImages: [
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2013%20Pro-9in5HAqKgEg4wYI55cWOuHRT3JhS1d.png",
+        caption: "App overview: Community feed, onboarding splash screen, and AI-powered ingredient-based recipe generation",
+        alt: "Three iPhone mockups showing FoodApp Community, onboarding, and Ingredients screens",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/homescreen-5D0lfRSo6f44yONhgxyaQFInZzhKNV.png",
+        caption: "Home screen with personalized recommendations, cultural calendar, and quick meal categories",
+        alt: "FoodApp home screen showing recipe recommendations, search bar, and meal categories",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2022-8kqwzUNJGXD7jBClF4IL3GxrwdTMYJ.png",
+        caption: "Recipe detail view with nutritional facts, customizable portions, and ingredient checklist",
+        alt: "Recipe detail screen for Chicken Stir-fry showing nutrition info and ingredients",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2012-dCbVtzdGkLwnuel6GoxFwtgjJ3fjKB.png",
+        caption: "Step-by-step cooking mode with built-in timer for guided meal preparation",
+        alt: "Cooking Mode screen showing step 5 of 8 with a timer countdown",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/reward-vTQ1iiRJoJFs7EcPqLF3yigZlO9zQ5.png",
+        caption: "Gamification system with points, daily bonuses, and weekly cooking challenges",
+        alt: "Rewards and Points screen with 450 points, daily bonus tracker, and weekly tasks",
+      },
+    ],
+    demo: {
+      type: "gallery",
+      label: "View Prototype Gallery",
+    },
   },
   {
     id: 6,
