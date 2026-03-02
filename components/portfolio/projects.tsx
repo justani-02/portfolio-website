@@ -173,6 +173,13 @@ const projects = [
     gradient: "from-teal-500/20 via-cyan-500/15 to-blue-500/20",
     borderColor: "hover:border-teal-500/50",
     size: "medium",
+    github: "https://github.com/justani-02/Dialysis-Medical-Passport-App",
+    links: [
+      {
+        label: "Figma Prototype",
+        url: "https://www.figma.com/proto/4WMAuw2kvibVz1HA1fqgZ9/Medical-Passport-Prototype?page-id=0%3A1&node-id=4-1430&viewport=1455%2C1351%2C0.65&t=OssnaNmvhdl6LtkS-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=4%3A1430",
+      },
+    ],
   },
   {
     id: 8,
