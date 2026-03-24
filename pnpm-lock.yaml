@@ -93,10 +93,10 @@ importers:
         specifier: 1.1.6
         version: 1.1.6(@types/react-dom@19.2.3(@types/react@19.2.11))(@types/react@19.2.11)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@react-three/drei':
-        specifier: 10.7.7
+        specifier: ^10.7.7
         version: 10.7.7(@react-three/fiber@9.5.0(baf5ca75e57795baa1efb98e5ac9c07b))(@types/react@19.2.11)(@types/three@0.182.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.182.0)
       '@react-three/fiber':
-        specifier: 9.5.0
+        specifier: ^9.5.0
         version: 9.5.0(baf5ca75e57795baa1efb98e5ac9c07b)
       '@vercel/analytics':
         specifier: 1.3.1
@@ -162,7 +162,7 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.1.18)
       three:
-        specifier: 0.182.0
+        specifier: ^0.182.0
         version: 0.182.0
       vaul:
         specifier: ^1.1.2
