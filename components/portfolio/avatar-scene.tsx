@@ -1,17 +1,42 @@
 "use client";
 
-import { useRef, Suspense, createContext, useContext, useState, useEffect } from "react";
+import { useRef, Suspense, createContext, useContext, useState, useEffect, useMemo, Component, ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment, useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
 
 const AVATAR_URL = "https://models.readyplayer.me/695ab54e8f9c70cbc92c8821.glb";
 
+// Error boundary for Three.js
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  fallback: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class ThreeErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+
 // Context to share mouse position with 3D scene
 const MouseContext = createContext({ x: 0, y: 0 });
-
-// Preload the model
-useGLTF.preload(AVATAR_URL);
 
 function Avatar() {
   const { scene } = useGLTF(AVATAR_URL);
@@ -19,8 +44,8 @@ function Avatar() {
   const mouse = useContext(MouseContext);
   const targetRotation = useRef({ x: 0, y: 0 });
 
-  // Clone the scene to avoid issues with reusing
-  const clonedScene = scene.clone();
+  // Clone the scene using useMemo to avoid recreating on every render
+  const clonedScene = useMemo(() => scene.clone(), [scene]);
 
   useFrame((state) => {
     if (avatarRef.current) {
@@ -104,39 +129,42 @@ export function AvatarScene({ mousePosition }: { mousePosition: { x: number; y: 
   }
 
   return (
-    <MouseContext.Provider value={mousePosition}>
-      <Canvas
-        camera={{ position: [0, 0.2, 3], fov: 45 }}
-        style={{ background: "transparent", width: "100%", height: "100%" }}
-        gl={{ 
-          antialias: true, 
-          alpha: true,
-          powerPreference: "high-performance"
-        }}
-        dpr={[1, 2]}
-        onError={() => setHasError(true)}
-      >
-        <color attach="background" args={["transparent"]} />
-        <ambientLight intensity={1} />
-        <directionalLight position={[5, 5, 5]} intensity={1.5} castShadow />
-        <directionalLight position={[-5, 3, -5]} intensity={0.8} color="#8b5cf6" />
-        <spotLight position={[0, 5, 0]} intensity={0.8} angle={0.5} penumbra={1} />
-        <pointLight position={[0, 0, 3]} intensity={0.5} color="#ffffff" />
-        <Suspense fallback={<LoadingFallback />}>
-          <Avatar />
-          <Environment preset="city" />
-        </Suspense>
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          enableRotate={true}
-          rotateSpeed={0.5}
-          minPolarAngle={Math.PI / 3}
-          maxPolarAngle={Math.PI / 1.8}
-          minAzimuthAngle={-Math.PI / 3}
-          maxAzimuthAngle={Math.PI / 3}
-        />
-      </Canvas>
-    </MouseContext.Provider>
+    <ThreeErrorBoundary fallback={<AvatarFallback />}>
+      <MouseContext.Provider value={mousePosition}>
+        <Canvas
+          camera={{ position: [0, 0.2, 3], fov: 45 }}
+          style={{ background: "transparent", width: "100%", height: "100%" }}
+          gl={{ 
+            antialias: true, 
+            alpha: true,
+            powerPreference: "high-performance",
+            failIfMajorPerformanceCaveat: false
+          }}
+          dpr={[1, 2]}
+          onError={() => setHasError(true)}
+        >
+          <color attach="background" args={["transparent"]} />
+          <ambientLight intensity={1} />
+          <directionalLight position={[5, 5, 5]} intensity={1.5} castShadow />
+          <directionalLight position={[-5, 3, -5]} intensity={0.8} color="#8b5cf6" />
+          <spotLight position={[0, 5, 0]} intensity={0.8} angle={0.5} penumbra={1} />
+          <pointLight position={[0, 0, 3]} intensity={0.5} color="#ffffff" />
+          <Suspense fallback={<LoadingFallback />}>
+            <Avatar />
+            <Environment preset="city" />
+          </Suspense>
+          <OrbitControls
+            enableZoom={false}
+            enablePan={false}
+            enableRotate={true}
+            rotateSpeed={0.5}
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={Math.PI / 1.8}
+            minAzimuthAngle={-Math.PI / 3}
+            maxAzimuthAngle={Math.PI / 3}
+          />
+        </Canvas>
+      </MouseContext.Provider>
+    </ThreeErrorBoundary>
   );
 }
