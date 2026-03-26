@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, Sparkles, Brain, Activity, Users, ChevronDown, Award, TrendingUp, ChevronLeft, ChevronRight, Play, X, Image as ImageIcon, Maximize2 } from "lucide-react";
+import { motion, useInView, AnimatePresence, type Variants } from "framer-motion";
+import { ExternalLink, Github, Sparkles, Brain, Activity, Users, ChevronDown, Award, TrendingUp, ChevronLeft, ChevronRight, Play, X, Image as ImageIcon, Maximize2, Code, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Filter categories with counts
@@ -44,6 +44,95 @@ const projects = [
       type: "video",
       videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
       label: "View Demo",
+    },
+  },
+  {
+    id: 9,
+    title: "AI UX Decision Intelligence Platform",
+    category: "Product Design | UX | AI",
+    filters: ["design", "research", "development"],
+    description:
+      "An AI-powered SaaS platform that evaluates website usability using Jakob Nielsen’s heuristics and transforms insights into actionable decisions. The system evolved across three stages: V1 (UX analysis), V2 (decision layer with prioritization, KPI mapping, and task generation), and V3 (validation layer with before/after comparison, KPI tracking, and feedback loops). It enables teams to move from identifying UX issues to prioritizing fixes and validating their real impact on user experience and business outcomes.",
+    tags: ["UX Design", "HCI", "AI", "UX Research", "Product Design", "SaaS", "Data Visualization", "Decision Systems"],
+    status: "Live & Public",
+    badge: "2026",
+    github: "https://github.com/justani-02/ux-heuristic-evaluation",
+    gradient: "from-indigo-500/20 via-blue-500/20 to-cyan-500/20",
+    borderColor: "hover:border-indigo-500/50",
+    size: "medium",
+    hasCarousel: true,
+    carouselImages: [
+      // {
+      //   src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2013%20Pro-9in5HAqKgEg4wYI55cWOuHRT3JhS1d.png",
+      //   caption: "App overview: Community feed, onboarding splash screen, and AI-powered ingredient-based recipe generation",
+      //   alt: "Three iPhone mockups showing FoodApp Community, onboarding, and Ingredients screens",
+      // },
+      // {
+      //   src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/homescreen-5D0lfRSo6f44yONhgxyaQFInZzhKNV.png",
+      //   caption: "Home screen with personalized recommendations, cultural calendar, and quick meal categories",
+      //   alt: "FoodApp home screen showing recipe recommendations, search bar, and meal categories",
+      // },
+      // {
+      //   src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2022-8kqwzUNJGXD7jBClF4IL3GxrwdTMYJ.png",
+      //   caption: "Recipe detail view with nutritional facts, customizable portions, and ingredient checklist",
+      //   alt: "Recipe detail screen for Chicken Stir-fry showing nutrition info and ingredients",
+      // },
+      // {
+      //   src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2012-dCbVtzdGkLwnuel6GoxFwtgjJ3fjKB.png",
+      //   caption: "Step-by-step cooking mode with built-in timer for guided meal preparation",
+      //   alt: "Cooking Mode screen showing step 5 of 8 with a timer countdown",
+      // },
+      // {
+      //   src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/reward-vTQ1iiRJoJFs7EcPqLF3yigZlO9zQ5.png",
+      //   caption: "Gamification system with points, daily bonuses, and weekly cooking challenges",
+      //   alt: "Rewards and Points screen with 450 points, daily bonus tracker, and weekly tasks",
+      // },
+    ],
+  },
+  {
+    id: 8,
+    title: "FoodApp - Student Meal Planning",
+    category: "UX Research | Prototyping",
+    filters: ["design"],
+    description:
+      "iOS meal planning app prototype for UCD students. 12 screens with AI menu assistant, weekly planner, pantry tracking, and gamification. Research-driven design from 37-student survey addressing decision fatigue (40.5%), time constraints (48.6%), budget consciousness (83.7%).",
+    tags: ["Figma", "JSON Specification", "iOS Design System"],
+    status: "Completed - User Testing Phase",
+    badge: "UX Research",
+    gradient: "from-orange-500/20 via-amber-500/15 to-yellow-500/20",
+    borderColor: "hover:border-orange-500/50",
+    size: "large",
+    hasCarousel: true,
+    carouselImages: [
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2013%20Pro-9in5HAqKgEg4wYI55cWOuHRT3JhS1d.png",
+        caption: "App overview: Community feed, onboarding splash screen, and AI-powered ingredient-based recipe generation",
+        alt: "Three iPhone mockups showing FoodApp Community, onboarding, and Ingredients screens",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/homescreen-5D0lfRSo6f44yONhgxyaQFInZzhKNV.png",
+        caption: "Home screen with personalized recommendations, cultural calendar, and quick meal categories",
+        alt: "FoodApp home screen showing recipe recommendations, search bar, and meal categories",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2022-8kqwzUNJGXD7jBClF4IL3GxrwdTMYJ.png",
+        caption: "Recipe detail view with nutritional facts, customizable portions, and ingredient checklist",
+        alt: "Recipe detail screen for Chicken Stir-fry showing nutrition info and ingredients",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2012-dCbVtzdGkLwnuel6GoxFwtgjJ3fjKB.png",
+        caption: "Step-by-step cooking mode with built-in timer for guided meal preparation",
+        alt: "Cooking Mode screen showing step 5 of 8 with a timer countdown",
+      },
+      {
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/reward-vTQ1iiRJoJFs7EcPqLF3yigZlO9zQ5.png",
+        caption: "Gamification system with points, daily bonuses, and weekly cooking challenges",
+        alt: "Rewards and Points screen with 450 points, daily bonus tracker, and weekly tasks",
+      },
+    ],
+    demo: {
+      type: "gallery",
+      label: "View Prototype Gallery",
     },
   },
   {
@@ -182,52 +271,6 @@ const projects = [
     ],
   },
   {
-    id: 8,
-    title: "FoodApp - Student Meal Planning",
-    category: "UX Research | Prototyping",
-    filters: ["design"],
-    description:
-      "iOS meal planning app prototype for UCD students. 12 screens with AI menu assistant, weekly planner, pantry tracking, and gamification. Research-driven design from 37-student survey addressing decision fatigue (40.5%), time constraints (48.6%), budget consciousness (83.7%).",
-    tags: ["Figma", "JSON Specification", "iOS Design System"],
-    status: "Completed - User Testing Phase",
-    badge: "UX Research",
-    gradient: "from-orange-500/20 via-amber-500/15 to-yellow-500/20",
-    borderColor: "hover:border-orange-500/50",
-    size: "large",
-    hasCarousel: true,
-    carouselImages: [
-      {
-        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2013%20Pro-9in5HAqKgEg4wYI55cWOuHRT3JhS1d.png",
-        caption: "App overview: Community feed, onboarding splash screen, and AI-powered ingredient-based recipe generation",
-        alt: "Three iPhone mockups showing FoodApp Community, onboarding, and Ingredients screens",
-      },
-      {
-        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/homescreen-5D0lfRSo6f44yONhgxyaQFInZzhKNV.png",
-        caption: "Home screen with personalized recommendations, cultural calendar, and quick meal categories",
-        alt: "FoodApp home screen showing recipe recommendations, search bar, and meal categories",
-      },
-      {
-        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2022-8kqwzUNJGXD7jBClF4IL3GxrwdTMYJ.png",
-        caption: "Recipe detail view with nutritional facts, customizable portions, and ingredient checklist",
-        alt: "Recipe detail screen for Chicken Stir-fry showing nutrition info and ingredients",
-      },
-      {
-        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/iPhone%2014%20%26%2015%20Pro%20-%2012-dCbVtzdGkLwnuel6GoxFwtgjJ3fjKB.png",
-        caption: "Step-by-step cooking mode with built-in timer for guided meal preparation",
-        alt: "Cooking Mode screen showing step 5 of 8 with a timer countdown",
-      },
-      {
-        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/reward-vTQ1iiRJoJFs7EcPqLF3yigZlO9zQ5.png",
-        caption: "Gamification system with points, daily bonuses, and weekly cooking challenges",
-        alt: "Rewards and Points screen with 450 points, daily bonus tracker, and weekly tasks",
-      },
-    ],
-    demo: {
-      type: "gallery",
-      label: "View Prototype Gallery",
-    },
-  },
-  {
     id: 6,
     title: "Sexual Harassment Awareness Campaign",
     category: "Social Impact Design",
@@ -265,7 +308,7 @@ const projects = [
 ];
 
 // Animation variants
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -276,7 +319,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 40, scale: 0.95 },
   visible: {
     opacity: 1,
@@ -297,7 +340,7 @@ const itemVariants = {
   },
 };
 
-const headerVariants = {
+const headerVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
@@ -309,7 +352,7 @@ const headerVariants = {
   },
 };
 
-const filterVariants = {
+const filterVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
@@ -572,14 +615,14 @@ export function Projects() {
   };
 
   // Filter projects
-  const filteredProjects = activeFilter === "all" 
-    ? projects 
-    : projects.filter(p => p.filters?.includes(activeFilter));
+  const filteredProjects = activeFilter === "all"
+    ? projects
+    : projects.filter((p) => p.filters?.includes(activeFilter));
 
   // Get filter counts
   const getFilterCount = useCallback((filterId: string) => {
     if (filterId === "all") return projects.length;
-    return projects.filter(p => p.filters?.includes(filterId)).length;
+    return projects.filter((p) => p.filters?.includes(filterId)).length;
   }, []);
 
   const handleCarouselNav = (projectId: number, direction: "prev" | "next", totalImages: number) => {
@@ -742,13 +785,363 @@ export function Projects() {
             })}
           </motion.div>
 
+          {/* Top 2 Projects - Featured Section */}
+          {activeFilter === "all" && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="mb-16"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="h-px bg-gradient-to-r from-transparent via-primary to-transparent flex-1" />
+                <span className="text-primary font-medium text-sm uppercase tracking-wide px-4 py-2 bg-primary/10 rounded-full">
+                  Featured Work
+                </span>
+                <div className="h-px bg-gradient-to-r from-transparent via-primary to-transparent flex-1" />
+              </div>
+
+              <div className="space-y-8">
+                {projects.slice(0, 2).map((project, index) => {
+                  const isFeatured = project.size === "featured";
+                  const isExpanded = expandedProjects.has(project.id);
+                  const hasExpandedDetails = project.hasExpandedView && project.expandedDetails;
+
+                  return (
+                    <motion.div
+                      key={project.id}
+                      variants={itemVariants}
+                      initial="hidden"
+                      animate="visible"
+                      className={`group relative rounded-3xl bg-card backdrop-blur-sm border transition-all duration-500 hover:-translate-y-2 overflow-hidden ${
+                        isFeatured
+                          ? "border-teal-500/30 hover:border-teal-400/60"
+                          : `border-border ${project.borderColor}`
+                      }`}
+                    >
+                      {/* Gradient Background */}
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-br ${project.gradient} ${
+                          isFeatured ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                        } transition-opacity duration-500`}
+                      />
+
+                      {/* Featured glow effect */}
+                      {isFeatured && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 via-cyan-500/10 to-teal-500/5 animate-pulse" />
+                      )}
+
+                      {/* Content */}
+                      <div className={`relative z-10 h-full flex flex-col ${isFeatured ? "p-8 sm:p-10 lg:p-12" : "p-6 sm:p-8"}`}>
+                        <div className="flex items-start justify-between mb-4 flex-wrap gap-2">
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                              isFeatured
+                                ? "text-teal-300 bg-teal-500/20 border border-teal-500/30"
+                                : "text-primary bg-primary/10"
+                            }`}>
+                              {project.category}
+                            </span>
+                            {project.badge && (
+                              <span className={`px-3 py-1 text-xs font-bold rounded-full flex items-center gap-1.5 ${
+                                isFeatured
+                                  ? "text-cyan-200 bg-cyan-500/20 border border-cyan-400/40"
+                                  : "text-violet-200 bg-violet-500/20 border border-violet-400/40"
+                              }`}>
+                                <Award className="w-3 h-3" />
+                                {project.badge}
+                              </span>
+                            )}
+                          </div>
+                          <span className={`text-xs ${isFeatured ? "text-teal-300/80" : "text-muted-foreground"}`}>
+                            {project.status}
+                          </span>
+                        </div>
+
+                        <h3 className={`font-bold text-foreground mb-3 transition-colors text-balance ${
+                          isFeatured
+                            ? "text-2xl sm:text-3xl lg:text-4xl group-hover:text-teal-300"
+                            : "text-xl sm:text-2xl group-hover:text-primary"
+                        }`}>
+                          {project.title}
+                        </h3>
+
+                        <p className={`text-muted-foreground leading-relaxed ${
+                          isFeatured ? "text-base lg:text-lg max-w-4xl mb-6" : `text-sm ${hasExpandedDetails || project.hasCarousel ? "mb-4" : "flex-grow mb-6"}`
+                        }`}>
+                          {project.description}
+                        </p>
+
+                        {/* Image Carousel */}
+                        {project.hasCarousel && project.carouselImages && (
+                          <div className="mb-6">
+                            <div className="relative rounded-xl overflow-hidden bg-black/50 aspect-square max-w-md mx-auto group/carousel">
+                              {/* Images */}
+                              {project.carouselImages.map((image, imgIndex) => {
+                                const currentIndex = carouselIndexes[project.id] || 0;
+                                const isAwarenessProject = project.id === 6;
+                                const isArtworkClicked = clickedArtworks.has(imgIndex);
+
+                                return (
+                                  <div
+                                    key={imgIndex}
+                                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out cursor-pointer ${
+                                      imgIndex === currentIndex ? "opacity-100" : "opacity-0"
+                                    } ${isAwarenessProject && isArtworkClicked && !colorfulEggFound ? "ring-2 ring-primary ring-inset" : ""}`}
+                                    onClick={() => {
+                                      // Track artwork clicks for awareness project
+                                      if (isAwarenessProject) {
+                                        handleArtworkClick(imgIndex);
+                                      }
+                                      openGalleryLightbox(project.carouselImages!, imgIndex);
+                                    }}
+                                    title={isAwarenessProject && !colorfulEggFound ? `Click artwork ${imgIndex + 1}/3 ${isArtworkClicked ? "(clicked)" : ""}` : undefined}
+                                  >
+                                    <img
+                                      src={image.src}
+                                      alt={image.alt}
+                                      className="w-full h-full object-cover"
+                                    />
+                                    {/* Expand hint */}
+                                    <div className="absolute top-3 right-3 p-2 rounded-full bg-black/50 opacity-0 group-hover/carousel:opacity-100 transition-opacity">
+                                      <Maximize2 className="w-4 h-4 text-white" />
+                                    </div>
+                                    {/* Caption Overlay */}
+                                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 pt-12">
+                                      <p className="text-sm sm:text-base font-medium text-white text-center">
+                                        {image.caption}
+                                      </p>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+
+                              {/* Navigation Arrows */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCarouselNav(project.id, "prev", project.carouselImages!.length);
+                                }}
+                                className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 backdrop-blur-sm border border-white/20"
+                                aria-label="Previous image"
+                              >
+                                <ChevronLeft className="w-5 h-5" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCarouselNav(project.id, "next", project.carouselImages!.length);
+                                }}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 backdrop-blur-sm border border-white/20"
+                                aria-label="Next image"
+                              >
+                                <ChevronRight className="w-5 h-5" />
+                              </button>
+
+                              {/* Dot Indicators */}
+                              <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-2">
+                                {project.carouselImages.map((_, dotIndex) => {
+                                  const currentIndex = carouselIndexes[project.id] || 0;
+                                  return (
+                                    <button
+                                      key={dotIndex}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setCarouselIndex(project.id, dotIndex);
+                                      }}
+                                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                                        dotIndex === currentIndex
+                                          ? "bg-white w-6"
+                                          : "bg-white/50 hover:bg-white/80"
+                                      }`}
+                                      aria-label={`Go to image ${dotIndex + 1}`}
+                                    />
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Expandable Details Section */}
+                        {hasExpandedDetails && (
+                          <div className="mb-6">
+                            <button
+                              onClick={() => toggleExpanded(project.id)}
+                              className="flex items-center gap-2 text-sm font-medium text-violet-300 hover:text-violet-200 transition-colors mb-4"
+                            >
+                              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`} />
+                              {isExpanded ? "Show Less" : "Read More"}
+                            </button>
+
+                            <div className={`grid transition-all duration-500 ease-in-out ${
+                              isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                            }`}>
+                              <div className="overflow-hidden">
+                                <div className="space-y-4 pt-2 pb-4">
+                                  {/* Key Features */}
+                                  <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
+                                    <h4 className="text-sm font-semibold text-violet-300 mb-3 flex items-center gap-2">
+                                      <Sparkles className="w-4 h-4" />
+                                      Key Features
+                                    </h4>
+                                    <ul className="space-y-2">
+                                      {project.expandedDetails.keyFeatures.map((feature, idx) => (
+                                        <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
+                                          <div className="w-1.5 h-1.5 rounded-full bg-violet-400 mt-2 flex-shrink-0" />
+                                          {feature}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+
+                                  {/* Technical & Venue */}
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                                      <h4 className="text-sm font-semibold text-purple-300 mb-3 flex items-center gap-2">
+                                        <Code className="w-4 h-4" />
+                                        Technical Details
+                                      </h4>
+                                      <p className="text-sm text-muted-foreground">
+                                        {project.expandedDetails.technical}
+                                      </p>
+                                    </div>
+                                    <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20">
+                                      <h4 className="text-sm font-semibold text-pink-300 mb-3 flex items-center gap-2">
+                                        <MapPin className="w-4 h-4" />
+                                        Venue & Future
+                                      </h4>
+                                      <p className="text-sm text-muted-foreground mb-2">
+                                        {project.expandedDetails.venue}
+                                      </p>
+                                      <p className="text-sm text-muted-foreground">
+                                        {project.expandedDetails.future}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Highlights for featured project */}
+                        {isFeatured && project.highlights && (
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                            {project.highlights.map((highlight) => (
+                              <div
+                                key={highlight.label}
+                                className="flex items-center gap-3 p-4 rounded-xl bg-teal-500/10 border border-teal-500/20"
+                              >
+                                {highlight.icon === "pillars" && <Sparkles className="w-5 h-5 text-teal-400" />}
+                                {highlight.icon === "brain" && <Brain className="w-5 h-5 text-cyan-400" />}
+                                {highlight.icon === "activity" && <Activity className="w-5 h-5 text-emerald-400" />}
+                                <span className="text-sm font-medium text-foreground">{highlight.label}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <div className={`space-y-4 ${isFeatured ? "" : "mt-auto"}`}>
+                          {/* Tags */}
+                          <div className="flex flex-wrap gap-2">
+                            {project.tags.slice(0, isFeatured ? undefined : project.tags.length).map((tag) => (
+                              <span
+                                key={tag}
+                                className={`px-2 py-1 text-xs rounded-md ${
+                                  isFeatured
+                                    ? "text-teal-200/80 bg-teal-500/10 border border-teal-500/20"
+                                    : "text-muted-foreground bg-secondary"
+                                }`}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex flex-wrap gap-3 pt-2">
+                            {/* Demo Button */}
+                            {project.demo && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => openDemoModal(project)}
+                                className={`${
+                                  isFeatured
+                                    ? "border-teal-500/40 hover:bg-teal-500/10 hover:border-teal-400/60 bg-transparent text-teal-300"
+                                    : "border-primary/50 hover:bg-primary/10 hover:border-primary bg-transparent text-primary"
+                                } transition-all duration-300 hover:scale-105`}
+                              >
+                                {project.demo.type === "video" && <Play className="w-4 h-4 mr-2" />}
+                                {project.demo.type === "snapchat" && <ExternalLink className="w-4 h-4 mr-2" />}
+                                {project.demo.type === "gallery" && <ImageIcon className="w-4 h-4 mr-2" />}
+                                {project.demo.label}
+                              </Button>
+                            )}
+
+                            {/* Featured project actions */}
+                            {isFeatured && project.actions?.map((action) => (
+                              <Button
+                                key={action.label}
+                                size={isFeatured ? "default" : "sm"}
+                                variant={action.type === "primary" ? "default" : "outline"}
+                                className={
+                                  action.type === "primary"
+                                    ? "bg-teal-500 hover:bg-teal-400 text-background font-medium"
+                                    : "border-teal-500/40 hover:bg-teal-500/10 hover:border-teal-400/60 bg-transparent text-teal-300"
+                                }
+                              >
+                                {action.type === "secondary" && <Users className="w-4 h-4 mr-2" />}
+                                {action.label}
+                              </Button>
+                            ))}
+
+                            {/* Links */}
+                            {project.links?.map((link) => (
+                              <Button
+                                key={link.label}
+                                size="sm"
+                                variant="outline"
+                                asChild
+                                className="border-primary/50 hover:bg-primary/10 hover:border-primary bg-transparent text-primary transition-all duration-300 hover:scale-105"
+                              >
+                                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                  <ExternalLink className="w-4 h-4 mr-2" />
+                                  {link.label}
+                                </a>
+                              </Button>
+                            ))}
+                            {project.github && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                asChild
+                                className="border-primary/50 hover:bg-primary/10 hover:border-primary bg-transparent text-primary transition-all duration-300 hover:scale-105"
+                              >
+                                <a href={project.github} target="_blank" rel="noopener noreferrer">
+                                  <Github className="w-4 h-4 mr-2" />
+                                  View Code
+                                </a>
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+
           {/* Bento Grid */}
           <motion.div 
             layout
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => {
+              {filteredProjects.slice(2).map((project) => {
                 const isFeatured = project.size === "featured";
                 const isExpanded = expandedProjects.has(project.id);
                 const hasExpandedDetails = project.hasExpandedView && project.expandedDetails;

@@ -23,8 +23,26 @@ class ThreeErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryStat
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(): ErrorBoundaryState {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    // Check if this is a GLB loading error and suppress console output
+    if (error.message?.includes('Failed to fetch') ||
+        error.message?.includes('GLB') ||
+        error.message?.includes('models.readyplayer.me')) {
+      console.warn('GLB model failed to load, using fallback avatar');
+      return { hasError: true };
+    }
+    // For other errors, still log them
+    console.error("ThreeErrorBoundary caught error:", error);
     return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: any) {
+    // Only log non-GLB errors
+    if (!error.message?.includes('Failed to fetch') &&
+        !error.message?.includes('GLB') &&
+        !error.message?.includes('models.readyplayer.me')) {
+      console.error("ThreeErrorBoundary caught error:", error, info);
+    }
   }
 
   render() {
@@ -39,10 +57,11 @@ class ThreeErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryStat
 const MouseContext = createContext({ x: 0, y: 0 });
 
 function Avatar() {
-  const { scene } = useGLTF(AVATAR_URL);
   const avatarRef = useRef<THREE.Group>(null);
   const mouse = useContext(MouseContext);
   const targetRotation = useRef({ x: 0, y: 0 });
+
+  const { scene } = useGLTF(AVATAR_URL);
 
   // Clone the scene using useMemo to avoid recreating on every render
   const clonedScene = useMemo(() => scene.clone(), [scene]);
@@ -113,7 +132,6 @@ function AvatarFallback() {
 
 export function AvatarScene({ mousePosition }: { mousePosition: { x: number; y: number } }) {
   const [isReady, setIsReady] = useState(false);
-  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsReady(true), 100);
@@ -124,24 +142,19 @@ export function AvatarScene({ mousePosition }: { mousePosition: { x: number; y: 
     return <AvatarFallback />;
   }
 
-  if (hasError) {
-    return <AvatarFallback />;
-  }
-
   return (
     <ThreeErrorBoundary fallback={<AvatarFallback />}>
       <MouseContext.Provider value={mousePosition}>
         <Canvas
           camera={{ position: [0, 0.2, 3], fov: 45 }}
           style={{ background: "transparent", width: "100%", height: "100%" }}
-          gl={{ 
-            antialias: true, 
+          gl={{
+            antialias: true,
             alpha: true,
             powerPreference: "high-performance",
             failIfMajorPerformanceCaveat: false
           }}
           dpr={[1, 2]}
-          onError={() => setHasError(true)}
         >
           <color attach="background" args={["transparent"]} />
           <ambientLight intensity={1} />
